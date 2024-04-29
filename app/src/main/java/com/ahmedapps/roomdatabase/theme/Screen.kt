@@ -4,5 +4,6 @@ sealed class Screen(val rout:String) {
     object Recept1:Screen("Recept1")
     object LastScreen:Screen("LastScreen")
     object Uvod:Screen("Uvod")
+    object ReceptScreenOblubene:Screen("Oblubene")
 
 }

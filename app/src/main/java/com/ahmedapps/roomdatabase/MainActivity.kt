@@ -22,7 +22,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.ahmedapps.roomdatabase.data.Receptik
 import com.ahmedapps.roomdatabase.data.ReceptsDatabase
 import com.ahmedapps.roomdatabase.presentation.ReceptsScreen
+import com.ahmedapps.roomdatabase.presentation.ReceptsScreen1
 import com.ahmedapps.roomdatabase.presentation.ReceptsViewModel
+//import com.ahmedapps.roomdatabase.presentation.RememberStringArrayManager
+//import com.ahmedapps.roomdatabase.presentation.StringArrayManager
 import com.ahmedapps.roomdatabase.theme.LastScreen
 import com.ahmedapps.roomdatabase.theme.Recept
 import com.ahmedapps.roomdatabase.theme.Screen
@@ -31,11 +34,15 @@ import com.ahmedapps.roomdatabase.ui.RoomDatabaseTheme
 import com.google.android.datatransport.runtime.dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.GlobalScope
+//import kotlinx.coroutines.flow.internal.NoOpContinuation.context
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 
+//import kotlin.coroutines.jvm.internal.CompletedContinuation.context
+
 
 class MainActivity : ComponentActivity() {
+
 
 
     private val viewModel by viewModels<ReceptsViewModel> (
@@ -49,10 +56,13 @@ class MainActivity : ComponentActivity() {
     )
 
 
+
     lateinit var database: ReceptsDatabase
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
+
+
         provideNotesDatabase(applicationContext)
         RoomDatabaseTheme {
             Surface(
@@ -72,12 +82,13 @@ override fun onCreate(savedInstanceState: Bundle?) {
                     }
 
                     composable(
-                        Screen.Recept1.rout+ "/{Nazov}/{jpg}/{ingrediencie}/{postup}",
+                        Screen.Recept1.rout+ "/{Nazov}/{jpg}/{ingrediencie}/{postup}/{strind}",
                         arguments=listOf(
                             navArgument("Nazov"){type = NavType.StringType },
                             navArgument("jpg"){type = NavType.StringType },
                             navArgument("ingrediencie"){type = NavType.StringType},
-                           navArgument("postup"){type = NavType.StringType}
+                           navArgument("postup"){type = NavType.StringType},
+                            navArgument("strind"){type = NavType.StringType}
                             ))
                     {backStackEntry->
                         //val Nazov = backStackEntry.arguments?.getString("Nazov")
@@ -85,6 +96,13 @@ override fun onCreate(savedInstanceState: Bundle?) {
                     }
                     composable(Screen.LastScreen.rout){
                         LastScreen(navController = navController)
+                    }
+                    composable(Screen.ReceptScreenOblubene.rout+"/{sstring}",
+                       arguments = listOf(navArgument("sstring"){type = NavType.StringType})
+                    ){backStackEntry->
+                        ReceptsScreen1(state = state,
+                            navController = navController,backStackEntry=backStackEntry,
+                            onEvent = viewModel::onEvent)
                     }
                     composable(Screen.Uvod.rout){
                         Uvod(navController = navController)

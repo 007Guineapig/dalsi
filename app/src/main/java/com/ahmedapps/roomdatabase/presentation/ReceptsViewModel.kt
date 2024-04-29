@@ -73,6 +73,8 @@ class ReceptsViewModel(
             ReceptsEvent.SortRecepts -> {
                 isSortedByDateAdded.value = !isSortedByDateAdded.value
             }
+
+            is ReceptsEvent.updateRecept -> TODO()
         }
     }
 

@@ -7,6 +7,7 @@ sealed interface ReceptsEvent {
 
     data class DeleteRecept(val receptik: Receptik): ReceptsEvent
 
+    data class updateRecept(val receptik:Receptik):ReceptsEvent
     data class SaveRecept(
         val nazov: String,
         val popis: String,

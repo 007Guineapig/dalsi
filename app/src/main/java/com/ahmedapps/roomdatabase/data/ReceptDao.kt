@@ -27,6 +27,8 @@ interface ReceptDao {
     @Query("SELECT * FROM receptik ORDER BY nazov ASC")
     fun getNotesOrderdByTitle(): Flow<List<Receptik>>
 
+    @Query("UPDATE receptik SET kategoria = :kategoria_ Where id =:tid")
+    suspend fun updateLiked(tid:Int,kategoria_:String)
 }
 
 
