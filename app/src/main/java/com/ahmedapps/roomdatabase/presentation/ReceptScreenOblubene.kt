@@ -5,7 +5,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -28,7 +26,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -49,12 +46,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
@@ -69,15 +65,12 @@ fun ReceptsScreen1(
     navController: NavController,backStackEntry: NavBackStackEntry,
     onEvent: (ReceptsEvent) -> Unit
 ) {
-    var g = backStackEntry.arguments?.getString("sstring")
-
-
-    var pf= g?.split(",")?.toTypedArray()
-
+    val poleLikovVoStringu = backStackEntry.arguments?.getString("sstring")
+    val poleLikov= poleLikovVoStringu?.split(",")?.toTypedArray()
     var text by remember { mutableStateOf("")}
     var active by remember { mutableStateOf(false)}
     var pomocna = ""
-    var items = remember {
+    val items = remember {
         mutableStateListOf<String>()
 
     }
@@ -86,14 +79,11 @@ fun ReceptsScreen1(
         .padding(16.dp)){
         Text(
             text = "Liked",
+            fontSize = 20.sp,
             modifier = Modifier
-                //.padding(10.dp)
                 .fillMaxWidth(),
             fontWeight = FontWeight.ExtraBold,
-           // fontFamily = FontFamily.SansSerif,
             textAlign = TextAlign.Center
-            //fontFamily = FontFamily()
-
         )
 
         SearchBar(modifier=Modifier.fillMaxWidth(),
@@ -141,44 +131,39 @@ fun ReceptsScreen1(
                         Icons.Default.History,
                         contentDescription = "History Icon",
                         modifier = Modifier.padding(end = 10.dp)
-
                     )
                     Text(text = it)
                     pomocna = it
                 }
             }
         }
-
-
-
-
         LazyColumn(
-
             modifier = Modifier
                 .fillMaxWidth()
                 .height(590.dp)
                 .padding(8.dp),
-
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(state.receptiks.size) { index ->
-                if (pf != null) {
-                    if ((pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna))&& pf.get(index) =="cau") {
-                        ReceptItem1(
-                            state = state,
-                            index = index,
-                            onEvent = onEvent,
-                            navController
-                        )
+            for(index in 0..state.receptiks.size){
+                if (poleLikov != null) {
+                    if ((pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna))&& poleLikov.get(index) =="cau"&&  (poleLikov.size >= state.receptiks.size)){
+
+                        item {
+                            ReceptItem1(
+                                state = state,
+                                index = index,
+                                onEvent = onEvent,
+                                navController
+                            )
+                        }
                     }
                 }
-
             }
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp), // Adjust the vertical padding here
+                .padding(vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Button(
@@ -190,14 +175,13 @@ fun ReceptsScreen1(
                     .height(50.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Home, // Replace "YourIcon" with the desired icon
+                    imageVector = Icons.Default.Home,
                     contentDescription = "Button 1 Icon"
                 )
             }
-
             Button(
                 onClick = {
-                    // Handle button 2 click
+
                 },
                 colors = ButtonDefaults.buttonColors(contentColor = Color.Cyan),
                 modifier = Modifier
@@ -211,9 +195,7 @@ fun ReceptsScreen1(
                 )
             }
         }
-
     }
-
 }
 
 
@@ -229,20 +211,14 @@ fun ReceptItem1(
     val vyzor_ = URLEncoder.encode(state.receptiks[index].obrazok, "UTF-8")
     val ingrediencie = URLEncoder.encode(state.receptiks[index].ingrediencie, "UTF-8")
     val postup = URLEncoder.encode(state.receptiks[index].postup, "UTF-8")
-
     val popis_ = state.receptiks[index].popis
     val vyzor = state.receptiks[index].obrazok
-    val ingrediencie_ = state.receptiks[index].ingrediencie
     val postup_ = postup
 
-
-
     Card(
-
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primary
         ),
-
         modifier = Modifier
             .clickable(onClick = { navController.navigate(Screen.Recept1.rout + "/$nazov_/$vyzor_/$ingrediencie/$postup_/cau") }) // Add clickable modifier here
             .padding(vertical = 4.dp, horizontal = 8.dp)
@@ -266,22 +242,18 @@ fun ReceptItem1(
                     imageVector = Icons.Filled.Favorite,
                     contentDescription = null,
                     modifier = Modifier
-                        // Adjust size as needed
                         .padding(16.dp)
-                        .size(48.dp), // Add padding if necessary
+                        .size(48.dp),
                     tint = Color.White
                 )
-
             }
-            CardContent(nazov_,popis_)
-
+            FunRozkakovaciPanel(nazov_,popis_)
         }
-
     }
 }
 
 @Composable
-private fun CardContent(name: String,popis_:String) {
+private fun FunRozkakovaciPanel(name: String, popis_:String) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     Row(

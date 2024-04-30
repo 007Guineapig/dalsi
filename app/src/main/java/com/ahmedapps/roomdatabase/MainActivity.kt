@@ -24,9 +24,6 @@ import com.ahmedapps.roomdatabase.data.ReceptsDatabase
 import com.ahmedapps.roomdatabase.presentation.ReceptsScreen
 import com.ahmedapps.roomdatabase.presentation.ReceptsScreen1
 import com.ahmedapps.roomdatabase.presentation.ReceptsViewModel
-//import com.ahmedapps.roomdatabase.presentation.RememberStringArrayManager
-//import com.ahmedapps.roomdatabase.presentation.StringArrayManager
-import com.ahmedapps.roomdatabase.theme.LastScreen
 import com.ahmedapps.roomdatabase.theme.Recept
 import com.ahmedapps.roomdatabase.theme.Screen
 import com.ahmedapps.roomdatabase.theme.Uvod
@@ -34,11 +31,8 @@ import com.ahmedapps.roomdatabase.ui.RoomDatabaseTheme
 import com.google.android.datatransport.runtime.dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.GlobalScope
-//import kotlinx.coroutines.flow.internal.NoOpContinuation.context
 import kotlinx.coroutines.launch
 import org.json.JSONArray
-
-//import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 
 class MainActivity : ComponentActivity() {
@@ -55,8 +49,6 @@ class MainActivity : ComponentActivity() {
         }
     )
 
-
-
     lateinit var database: ReceptsDatabase
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -66,7 +58,6 @@ override fun onCreate(savedInstanceState: Bundle?) {
         provideNotesDatabase(applicationContext)
         RoomDatabaseTheme {
             Surface(
-                //modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
 
@@ -91,11 +82,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
                             navArgument("strind"){type = NavType.StringType}
                             ))
                     {backStackEntry->
-                        //val Nazov = backStackEntry.arguments?.getString("Nazov")
                         Recept(navController = navController,backStackEntry=backStackEntry)
-                    }
-                    composable(Screen.LastScreen.rout){
-                        LastScreen(navController = navController)
                     }
                     composable(Screen.ReceptScreenOblubene.rout+"/{sstring}",
                        arguments = listOf(navArgument("sstring"){type = NavType.StringType})
@@ -124,24 +111,24 @@ override fun onCreate(savedInstanceState: Bundle?) {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
                     GlobalScope.launch {
-                        val noteDao = database.dao
-                        val noteList: JSONArray =
+                        val receptDao = database.dao
+                        val receptList: JSONArray =
                             context.resources.openRawResource(R.raw.sample1).bufferedReader().use {
                                 JSONArray(it.readText())
                             }
 
-                        noteList.takeIf { it.length() > 0 }?.let { list ->
+                        receptList.takeIf { it.length() > 0 }?.let { list ->
                             for (index in 0 until list.length()) {
-                                val noteObj = list.getJSONObject(index)
+                                val receptObj = list.getJSONObject(index)
 
-                                noteDao.insert(
+                                receptDao.insert(
                                     Receptik(
-                                        nazov = noteObj.getString("nazov"),
-                                        popis = noteObj.getString("popis"),
-                                        obrazok = noteObj.getString("obrazok"),
-                                        postup = noteObj.getString("postup"),
-                                        ingrediencie = noteObj.getString("ingrediencie"),
-                                        kategoria = noteObj.getString("kategoria")
+                                        nazov = receptObj.getString("nazov"),
+                                        popis = receptObj.getString("popis"),
+                                        obrazok = receptObj.getString("obrazok"),
+                                        postup = receptObj.getString("postup"),
+                                        ingrediencie = receptObj.getString("ingrediencie"),
+                                        kategoria = receptObj.getString("kategoria")
                                     )
 
                                 )

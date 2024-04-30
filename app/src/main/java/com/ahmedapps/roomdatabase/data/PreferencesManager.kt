@@ -22,10 +22,9 @@ class PreferencesManager(context: Context) {
             defaultValue
         }
     }
-    fun getData1(key: String):String? {
-        val storedString = sharedPreferences.getString(key, null)
+    fun getDataAsString(key: String): String? {
 
-        return storedString
+        return sharedPreferences.getString(key, null)
 
     }
 }

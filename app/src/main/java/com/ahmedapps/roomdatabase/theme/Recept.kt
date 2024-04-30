@@ -5,7 +5,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +22,10 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,25 +57,27 @@ import java.net.URLDecoder
 fun Recept(navController: NavHostController,
            backStackEntry: NavBackStackEntry){
 
-    val Nazov = backStackEntry.arguments?.getString("Nazov")
+    val nazov = backStackEntry.arguments?.getString("Nazov")
     val jpg = backStackEntry.arguments?.getString("jpg")
     val postup_ = backStackEntry.arguments?.getString("postup")
-    val ingrediencie1 = backStackEntry.arguments?.getString("ingrediencie")
-    val ingrediencie = URLDecoder.decode(ingrediencie1, "UTF-8")
+    val ingrediencie_ = backStackEntry.arguments?.getString("ingrediencie")
+    val ingrediencie = URLDecoder.decode(ingrediencie_, "UTF-8")
     val postup = URLDecoder.decode(postup_,"UTF-8")
     val decodedUrl = URLDecoder.decode(jpg, "UTF-8")
-    val strind = backStackEntry.arguments?.getString("strind")
+    val liked = backStackEntry.arguments?.getString("strind")
 
-    Column(
-
-    ) {
+    Column{
         Box(
             modifier = Modifier.fillMaxWidth(),
-            //contentAlignment = Alignment.BottomStart
         ) {
 
+            Card (
 
-            Card {
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+            ){
+
                 Box{
                 Image(
                     painter = rememberImagePainter(
@@ -89,84 +92,61 @@ fun Recept(navController: NavHostController,
                         .height(250.dp),
                     contentScale = ContentScale.Crop
                 )
-                    /*
-                    ClickableHeartIcon(
-                        modifier = Modifier
-                            // .align(alignment = Alignment.TopStart)
-                            .padding(16.dp)
-                            .size(48.dp),
-                        onHeartClicked = { /* Handle heart click here */ }
-                    )
-
-                     */
                     Icon(
-                        imageVector = if (strind == "cau") Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+                        imageVector = if (liked == "cau") Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(70.dp) // Adjust size as needed
-                            .padding(4.dp), // Add padding if necessary
-                                tint = if (strind == "cau") Color.White else Color.Black
-
-
+                            .size(70.dp)
+                            .padding(4.dp),
+                                tint = if (liked == "cau") Color.White else Color.White
                     )
                 }
-
-
-
-                //Spacer(modifier = Modifier.height(16.dp))
-                if (ingrediencie != null && Nazov != null) {
-                    aha(ingrediencie,Nazov)
-
+                if (ingrediencie != null && nazov != null) {
+                    FunIngrediencie(ingrediencie,nazov)
                 }
             }
         }
-
-
-        val resultArray = remember { postup.split(Regex("\\d+\\.")) }
-        var currentPage by remember { mutableStateOf(0) }
-
-        val pagerState = rememberPagerState(pageCount = { resultArray.size })
+        val vyslednePole = remember { postup.split(Regex("\\d+\\.")) }
+        var aktualnaStranka by remember { mutableStateOf(0) }
+        val strankovacState = rememberPagerState(pageCount = { vyslednePole.size })
 
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             HorizontalPager(
-                state = pagerState,
+                state = strankovacState,
                 modifier = Modifier.fillMaxSize()
-
             ) { page ->
-                currentPage = page
-
-                Box(
-
-                    modifier = Modifier
+                aktualnaStranka = page
+                    Box(
+                        modifier = Modifier
                         .fillMaxSize()
                         .padding(12.dp)
-                        .background(if (page == currentPage) Color.White else Color.Transparent)
+                        .background(if (page == aktualnaStranka) Color.White else Color.Transparent)
                 ) {
-                    Column{
+                    LazyColumn{
 
-                    Text(
-                        text = resultArray[page],
-                        textAlign = TextAlign.Center
-                    )
+                        item{
+                            Text(
+                                text = vyslednePole[page],
+                                fontSize = 20.sp,
+                                textAlign = TextAlign.Center,
+                                )
+                            }
+                        }
                     }
                 }
             }
-
         }
-
-    }
     }
 
     @Composable
-    private fun aha(popis_:String,nazov:String) {
+    private fun FunIngrediencie(popis_:String, nazov:String) {
         var expanded by rememberSaveable { mutableStateOf(false) }
 
         Row(
             modifier = Modifier
-
                 .animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioMediumBouncy,
@@ -186,29 +166,29 @@ fun Recept(navController: NavHostController,
                         fontSize = 25.sp,
                         modifier = Modifier
                             .padding(15.dp),
-
-                        color = Color.Black,
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start
 
                     )
-//asdas
                 if (expanded) {
-
                     Text(
                         text = "Ingrediencie",
                         fontSize = 25.sp,
-                        color = Color.Black,
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start
 
                     )
-                    LazyColumn {
+                    LazyColumn (
+                        modifier = Modifier.fillMaxWidth()
+                    ){
                         item{
-                        Text(
-                            text = popis_
-                        )
-                    }}
+                            Text(
+                                text = popis_
+                            )
+                        }
+                    }
 
                 }
             }

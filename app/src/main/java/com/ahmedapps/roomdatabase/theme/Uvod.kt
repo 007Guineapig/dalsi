@@ -31,13 +31,10 @@ import com.ahmedapps.roomdatabase.R
 
 @Composable
 fun Uvod(navController: NavHostController,
-    //onContinueClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
-        //verticalArrangement = Arrangement.Center,
-        //horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(R.drawable.image11),
@@ -50,29 +47,21 @@ fun Uvod(navController: NavHostController,
         )
         Button(
             colors = ButtonDefaults.buttonColors(Color.Black.copy(alpha = 0.5f)),
-            //colors = ButtonDefaults.buttonColors(Color.Red.copy(alpha = 0.5f),
-
             modifier = Modifier
-
                 .align(Alignment.Center)
                 .height(100.dp)
                 .width(300.dp)
-
                 .clip(RoundedCornerShape(8.dp))
-
                 .padding(bottom = 16.dp),
             onClick = {navController.navigate(Screen.ReceptsScreen.rout)}
 
         ) {
             Row {
-
-
-            Text(
-                        text = "Lets COOk",
-                color = Color.White,
-                style = androidx.compose.ui.text.TextStyle(
+                Text(
+                    text = "Lets COOk",
+                    color = Color.White,
+                    style = androidx.compose.ui.text.TextStyle(
                     fontFamily = FontFamily.Serif,
-
                     fontSize = 40.sp
                 )
             )
@@ -80,15 +69,9 @@ fun Uvod(navController: NavHostController,
                     imageVector = Icons.Filled.Star,
                     contentDescription = null,
                     modifier = Modifier
-
                         .padding(start = 16.dp, top = 16.dp)
                 )
             }
-
-
-
-
         }
-
     }
 }

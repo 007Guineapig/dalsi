@@ -19,10 +19,10 @@ class ReceptsViewModel(
 
     private val isSortedByDateAdded = MutableStateFlow(true)
 
-    private var notes =
+    private var recepts =
         isSortedByDateAdded.flatMapLatest { sort ->
             if (sort) {
-               dao.getNotesOrderdByTitle()// dao.getNotesOrderdByDateAdded()
+               dao.getNotesOrderdByTitle()
             } else {
                 dao.getNotesOrderdByTitle()
             }
@@ -30,7 +30,7 @@ class ReceptsViewModel(
 
     val _state = MutableStateFlow(ReceptState())
     val state =
-        combine(_state, isSortedByDateAdded, notes) { state, isSortedByDateAdded, notes ->
+        combine(_state, isSortedByDateAdded, recepts) { state, isSortedByDateAdded, notes ->
             state.copy(
                 receptiks = notes
             )
@@ -38,12 +38,6 @@ class ReceptsViewModel(
 
     fun onEvent(event: ReceptsEvent) {
         when (event) {
-            is ReceptsEvent.DeleteRecept -> {
-                viewModelScope.launch {
-                    dao.deleteNote(event.receptik)
-                }
-            }
-
             is ReceptsEvent.SaveRecept -> {
                 val receptik = Receptik(
                     nazov = state.value.nazov.value,
@@ -56,7 +50,7 @@ class ReceptsViewModel(
                 )
 
                 viewModelScope.launch {
-                    dao.upsertNote(receptik)
+                    dao.upsertRecept(receptik)
                 }
 
                 _state.update {
@@ -69,12 +63,10 @@ class ReceptsViewModel(
                     )
                 }
             }
-
             ReceptsEvent.SortRecepts -> {
                 isSortedByDateAdded.value = !isSortedByDateAdded.value
             }
 
-            is ReceptsEvent.updateRecept -> TODO()
         }
     }
 

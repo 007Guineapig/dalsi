@@ -1,7 +1,5 @@
 package com.ahmedapps.roomdatabase.presentation
 
-import android.service.credentials.RemoteEntry
-import androidx.activity.compose.setContent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -50,13 +48,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.ahmedapps.roomdatabase.R
@@ -66,6 +62,8 @@ import com.ahmedapps.roomdatabase.data.PreferencesManager
 //import com.ahmedapps.roomdatabase.theme.ClickableHeartIcon
 import com.ahmedapps.roomdatabase.theme.Screen
 import java.net.URLEncoder
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,23 +79,18 @@ fun ReceptsScreen(
     var pomocna = ""
     var items = remember {
         mutableStateListOf<String>()
-
     }
-
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)){
             Text(
                 text = "Menu",
+                fontSize = 20.sp,
                 modifier = Modifier
-                    //.size(20.dp)
-                    //.padding(10.dp)
                     .fillMaxWidth(),
                 fontWeight = FontWeight.ExtraBold,
                 fontFamily = FontFamily.SansSerif,
                 textAlign = TextAlign.Center
-                //fontFamily = FontFamily()
-
             )
 
             SearchBar(modifier=Modifier.fillMaxWidth(),
@@ -109,7 +102,6 @@ fun ReceptsScreen(
                     items.add(text)
                     text = ""
                     active = false
-
                 },
                 active = active,
                 onActiveChange = {active = it},
@@ -145,7 +137,6 @@ fun ReceptsScreen(
                             Icons.Default.History,
                             contentDescription = "History Icon",
                             modifier = Modifier.padding(end = 10.dp)
-
                         )
                         Text(text = it)
                         pomocna = it
@@ -156,33 +147,24 @@ fun ReceptsScreen(
 
 
 
-        LazyColumn(
-
-            modifier = Modifier
-                //.fillMaxSize()
-                .fillMaxWidth()
-                .height(590.dp)
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            //for( n in state.receptiks)
-
-            items(state.receptiks.size) { index ->
-                if (pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna)) {
-                    ReceptItem(preferencesManager,
-                        state = state,
-                        index = index,
-                        onEvent = onEvent,
-                        navController
-                    )
-                }
-
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(590.dp)
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(state.receptiks.size) { index ->
+                    if (pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna)) {
+                         ReceptItem(preferencesManager,
+                            state = state,
+                            index = index,
+                            onEvent = onEvent,
+                            navController
+                         )
+                    }
+                 }
             }
-
-        }
-
-
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -191,7 +173,7 @@ fun ReceptsScreen(
             ) {
                 Button(
                     onClick = {
-                        // Handle button 1 click
+
                     },
                     colors = ButtonDefaults.buttonColors(contentColor = Color.Cyan),
                     modifier = Modifier
@@ -199,35 +181,29 @@ fun ReceptsScreen(
                         .height(50.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Home, // Replace "YourIcon" with the desired icon
+                        imageVector = Icons.Default.Home,
                         contentDescription = "Button 1 Icon"
                     )
                 }
-
                 Button(
                     onClick = {
-                        var data4 =  preferencesManager.getData("myKey", emptyArray())
-                        var t = preferencesManager.getData1("myKey")
-                        if(t ==null)
-                            t = "nejde to kamko"
-                        navController.navigate(Screen.ReceptScreenOblubene.rout+ "/$t")
+                        var pomocnePoleLikov = preferencesManager.getDataAsString("myKey")
+                        if(pomocnePoleLikov ==null)
+                            pomocnePoleLikov = "nejde to kamko"
+                        navController.navigate(Screen.ReceptScreenOblubene.rout+ "/$pomocnePoleLikov")
                     },
                     modifier = Modifier
                         .weight(1f)
                         .height(50.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ThumbUp, // Replace "YourIcon" with the desired icon
+                        imageVector = Icons.Default.ThumbUp,
                         contentDescription = "Button 1 Icon"
                     )
                 }
             }
-
-
-
+        }
     }
-
-}
 
 
 
@@ -239,72 +215,59 @@ fun ReceptItem(
     onEvent: (ReceptsEvent) -> Unit,
     navController:NavController
 ) {
+
     val nazov_ = state.receptiks[index].nazov //stringResource(affirmation.stringResourceId)
     val vyzor_ = URLEncoder.encode(state.receptiks[index].obrazok, "UTF-8")
     val ingrediencie = URLEncoder.encode(state.receptiks[index].ingrediencie, "UTF-8")
     val postup = URLEncoder.encode(state.receptiks[index].postup, "UTF-8")
-
     val popis_ = state.receptiks[index].popis
     val vyzor = state.receptiks[index].obrazok
-    val ingrediencie_ = state.receptiks[index].ingrediencie
     val postup_ = postup
-    var data3 =  preferencesManager.getData("myKey", emptyArray())
-
-
 
     Card(
 
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primary
         ),
-
         modifier = Modifier
             .clickable(onClick = {
-                var af = data3.get(index)
-                if(af =="")
-                    af = "ahoj"
-                navController.navigate(Screen.Recept1.rout + "/$nazov_/$vyzor_/$ingrediencie/$postup_/$af")
-            }) // Add clickable modifier here
+                val liknuteVoStringu = preferencesManager.getDataAsString("myKey")
+                val liknuteVoPole= liknuteVoStringu?.split(",")?.toTypedArray()
+                var jeLiknutyTento = liknuteVoPole?.get(index)
+                if(jeLiknutyTento ==""||jeLiknutyTento == null){
+                    jeLiknutyTento = "ahoj"
+                }
+                navController.navigate(Screen.Recept1.rout + "/$nazov_/$vyzor_/$ingrediencie/$postup_/$jeLiknutyTento")
+            })
             .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
-
         Column{
             Box {
                 Image(
                     painter = rememberImagePainter(
-                        data = vyzor,
+                           data = vyzor,
                         builder = {
-                            crossfade(true)
-                        }
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(194.dp),
-                    contentScale = ContentScale.Crop
-                )
-                ClickableHeartIcon(preferencesManager,state,index,
-                    modifier = Modifier
-                        // .align(alignment = Alignment.TopStart)
+                            crossfade(true) },
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(194.dp),
+                            contentScale = ContentScale.Crop
+                    )
+                        ClickableHeartIcon(preferencesManager,state,index,
+                        modifier = Modifier
                         .padding(16.dp)
                         .size(48.dp),
-
-                    onHeartClicked = {
-
-
-
+                        onHeartClicked = {
                     }
                 )
             }
-                CardContent(nazov_, popis_)
-
-
+            FunRozkakovaciPanel(nazov_, popis_)
         }
-
-
-
     }
 }
+
 @Composable
 fun ClickableHeartIcon(preferencesManager: PreferencesManager,
     state: ReceptState,
@@ -312,18 +275,15 @@ fun ClickableHeartIcon(preferencesManager: PreferencesManager,
     modifier: Modifier = Modifier,
     onHeartClicked: () -> Unit
 ) {
-    //val context = LocalContext.current
-    //val preferencesManager = remember { PreferencesManager(context) }
     var data by remember { mutableStateOf(preferencesManager.getData("myKey", emptyArray())) }
-    var heartClicked by remember { mutableStateOf(false) }
+    var srdceKliknute by remember { mutableStateOf(false) }
     LaunchedEffect(preferencesManager) {
         data = preferencesManager.getData("myKey", Array(10) { "" })
     }
 
     Icon(
-        imageVector = if (heartClicked || (data.getOrNull(index) == "cau")) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+        imageVector = if (srdceKliknute || (data.getOrNull(index) == "cau")) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
         contentDescription = null,
-
         modifier = modifier.clickable {
             val newData = data.toMutableList()
             if (data.isEmpty() || data.getOrNull(index) == null || data[index] != "cau") {
@@ -335,13 +295,13 @@ fun ClickableHeartIcon(preferencesManager: PreferencesManager,
             }
             preferencesManager.saveData("myKey", newData.toTypedArray())
             data = newData.toTypedArray()
-            heartClicked = newData[index] == "cau"
+            srdceKliknute = newData[index] == "cau"
             onHeartClicked()
         }
     )
 }
 @Composable
-private fun CardContent(name: String,popis_:String) {
+private fun FunRozkakovaciPanel(name: String, popis_:String) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     Row(
@@ -382,8 +342,6 @@ private fun CardContent(name: String,popis_:String) {
             )
         }
     }
-
-
 }
 
 

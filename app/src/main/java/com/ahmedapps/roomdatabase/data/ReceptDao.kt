@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface ReceptDao {
 
     @Upsert
-    suspend fun upsertNote(receptik: Receptik)
+    suspend fun upsertRecept(receptik: Receptik)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(receptik:Receptik)
@@ -21,14 +21,12 @@ interface ReceptDao {
     @Query("SELECT * FROM receptik")
     fun readAll():Flow<List<Receptik>>
 
-    @Delete
-    suspend fun deleteNote(receptik: Receptik)
+    //@Delete
+   // suspend fun deleteNote(receptik: Receptik)
 
     @Query("SELECT * FROM receptik ORDER BY nazov ASC")
     fun getNotesOrderdByTitle(): Flow<List<Receptik>>
 
-    @Query("UPDATE receptik SET kategoria = :kategoria_ Where id =:tid")
-    suspend fun updateLiked(tid:Int,kategoria_:String)
 }
 
 
