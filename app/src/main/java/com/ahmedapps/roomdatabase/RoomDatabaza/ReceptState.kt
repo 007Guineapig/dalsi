@@ -1,8 +1,7 @@
-package com.ahmedapps.roomdatabase.presentation
+package com.ahmedapps.roomdatabase.RoomDatabaza
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.ahmedapps.roomdatabase.data.Receptik
 
 data class ReceptState(
 

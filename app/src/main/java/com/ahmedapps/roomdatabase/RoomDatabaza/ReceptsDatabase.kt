@@ -1,4 +1,4 @@
-package com.ahmedapps.roomdatabase.data
+package com.ahmedapps.roomdatabase.RoomDatabaza
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
