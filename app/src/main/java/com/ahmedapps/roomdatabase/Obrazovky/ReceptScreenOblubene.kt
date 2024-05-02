@@ -38,6 +38,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -46,7 +48,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.ahmedapps.roomdatabase.R
 import com.ahmedapps.roomdatabase.RoomDatabaza.ReceptState
 import com.ahmedapps.roomdatabase.presentation.FunRozkakovaciPanel
@@ -132,6 +136,9 @@ fun ReceptsScreen1(
                 }
             }
         }
+        Box(modifier = Modifier
+            .weight(1f)
+            .fillMaxWidth()){
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -155,7 +162,7 @@ fun ReceptsScreen1(
                     }
                 }
             }}
-        }
+        }}
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -219,7 +226,7 @@ fun ReceptItem1(
             .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Column{
-            Box{
+            Box{/*
             Image(
                 painter = rememberImagePainter(
                     data = vyzor,
@@ -233,6 +240,16 @@ fun ReceptItem1(
                     .height(194.dp),
                 contentScale = ContentScale.Crop
             )
+            */
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current).data(vyzor)
+                        .crossfade(true).build(),
+                    error = painterResource(R.drawable.image11),
+                    placeholder = painterResource(R.drawable.loading_img),
+                    contentDescription = stringResource(R.string.liked),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxWidth()
+                )
                 Icon(
                     imageVector = Icons.Filled.Favorite,
                     contentDescription = null,

@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -47,14 +48,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.ahmedapps.roomdatabase.R
 import com.ahmedapps.roomdatabase.RoomDatabaza.PreferencesManager
 //import com.ahmedapps.roomdatabase.data.ArrayPrefMan
 import com.ahmedapps.roomdatabase.RoomDatabaza.ReceptState
 import com.ahmedapps.roomdatabase.presentation.FunRozkakovaciPanel
-//import com.ahmedapps.roomdatabase.data.RememberArrayPrefMan
-//import com.ahmedapps.roomdatabase.theme.ClickableHeartIcon
 import java.net.URLEncoder
 
 
@@ -136,11 +137,12 @@ fun ReceptsScreen(
                     }
                 }
             }
-
+Box(modifier = Modifier
+    .weight(1f)
+    .fillMaxWidth()){
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(590.dp)
+                    .fillMaxSize()
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -154,6 +156,7 @@ fun ReceptsScreen(
                     }
                  }
             }
+}
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -230,7 +233,7 @@ fun ReceptItem(
             .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Column{
-            Box {
+            Box {/*
                 Image(
                     painter = rememberImagePainter(
                            data = vyzor,
@@ -243,6 +246,18 @@ fun ReceptItem(
                                 .height(194.dp),
                             contentScale = ContentScale.Crop
                     )
+                    */
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current).data(vyzor)
+                        .crossfade(true).build(),
+                    error = painterResource(R.drawable.image11),
+                    placeholder = painterResource(R.drawable.loading_img),
+                    contentDescription = stringResource(R.string.liked),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                //LoadAsyncImageWithPlaceholder(vyzor)
                         ClickableHeartIcon(preferencesManager,state,index,
                         modifier = Modifier
                         .padding(16.dp)
