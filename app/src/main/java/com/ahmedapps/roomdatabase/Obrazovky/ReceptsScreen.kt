@@ -1,8 +1,5 @@
-package com.ahmedapps.roomdatabase.presentation
+package com.ahmedapps.roomdatabase.Obrazovky
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,8 +18,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Button
@@ -31,7 +26,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
@@ -41,7 +35,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,11 +49,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.ahmedapps.roomdatabase.R
+import com.ahmedapps.roomdatabase.RoomDatabaza.PreferencesManager
 //import com.ahmedapps.roomdatabase.data.ArrayPrefMan
-import com.ahmedapps.roomdatabase.data.PreferencesManager
+import com.ahmedapps.roomdatabase.RoomDatabaza.ReceptState
+import com.ahmedapps.roomdatabase.presentation.FunRozkakovaciPanel
 //import com.ahmedapps.roomdatabase.data.RememberArrayPrefMan
 //import com.ahmedapps.roomdatabase.theme.ClickableHeartIcon
-import com.ahmedapps.roomdatabase.theme.Screen
 import java.net.URLEncoder
 
 
@@ -70,7 +64,6 @@ import java.net.URLEncoder
 fun ReceptsScreen(
     state: ReceptState,
     navController: NavController,
-    onEvent: (ReceptsEvent) -> Unit
 ) {
     val context = LocalContext.current
     val preferencesManager = remember { PreferencesManager(context) }
@@ -84,7 +77,7 @@ fun ReceptsScreen(
             .fillMaxSize()
             .padding(16.dp)){
             Text(
-                text = "Menu",
+                text = stringResource(R.string.menu),
                 fontSize = 20.sp,
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -144,9 +137,6 @@ fun ReceptsScreen(
                 }
             }
 
-
-
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -159,7 +149,6 @@ fun ReceptsScreen(
                          ReceptItem(preferencesManager,
                             state = state,
                             index = index,
-                            onEvent = onEvent,
                             navController
                          )
                     }
@@ -189,7 +178,7 @@ fun ReceptsScreen(
                     onClick = {
                         var pomocnePoleLikov = preferencesManager.getDataAsString("myKey")
                         if(pomocnePoleLikov ==null)
-                            pomocnePoleLikov = "nejde to kamko"
+                            pomocnePoleLikov = "nejde"
                         navController.navigate(Screen.ReceptScreenOblubene.rout+ "/$pomocnePoleLikov")
                     },
                     modifier = Modifier
@@ -212,7 +201,6 @@ fun ReceptItem(
     preferencesManager: PreferencesManager,
     state: ReceptState,
     index: Int,
-    onEvent: (ReceptsEvent) -> Unit,
     navController:NavController
 ) {
 
@@ -263,17 +251,18 @@ fun ReceptItem(
                     }
                 )
             }
-            FunRozkakovaciPanel(nazov_, popis_)
+            FunRozkakovaciPanel(nazov_, popis_,false)
+
         }
     }
 }
 
 @Composable
 fun ClickableHeartIcon(preferencesManager: PreferencesManager,
-    state: ReceptState,
-    index: Int,
-    modifier: Modifier = Modifier,
-    onHeartClicked: () -> Unit
+                       state: ReceptState,
+                       index: Int,
+                       modifier: Modifier = Modifier,
+                       onHeartClicked: () -> Unit
 ) {
     var data by remember { mutableStateOf(preferencesManager.getData("myKey", emptyArray())) }
     var srdceKliknute by remember { mutableStateOf(false) }
@@ -300,49 +289,7 @@ fun ClickableHeartIcon(preferencesManager: PreferencesManager,
         }
     )
 }
-@Composable
-private fun FunRozkakovaciPanel(name: String, popis_:String) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
 
-    Row(
-        modifier = Modifier
-            .padding(12.dp)
-            .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
-                )
-            )
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(12.dp)
-        ) {
-
-            Text(
-                text = name, style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.ExtraBold
-                )
-            )
-            if (expanded) {
-                Text(
-                    text = popis_
-                )
-            }
-        }
-        IconButton(onClick = { expanded = !expanded }) {
-            Icon(
-                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                contentDescription = if (expanded) {
-                    stringResource(R.string.show_less)
-                } else {
-                    stringResource(R.string.show_more)
-                }
-            )
-        }
-    }
-}
 
 
 

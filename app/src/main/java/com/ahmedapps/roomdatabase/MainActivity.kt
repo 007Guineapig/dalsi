@@ -19,14 +19,14 @@ import androidx.navigation.navArgument
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.ahmedapps.roomdatabase.data.Receptik
-import com.ahmedapps.roomdatabase.data.ReceptsDatabase
-import com.ahmedapps.roomdatabase.presentation.ReceptsScreen
-import com.ahmedapps.roomdatabase.presentation.ReceptsScreen1
-import com.ahmedapps.roomdatabase.presentation.ReceptsViewModel
-import com.ahmedapps.roomdatabase.theme.Recept
-import com.ahmedapps.roomdatabase.theme.Screen
-import com.ahmedapps.roomdatabase.theme.Uvod
+import com.ahmedapps.roomdatabase.RoomDatabaza.Receptik
+import com.ahmedapps.roomdatabase.RoomDatabaza.ReceptsDatabase
+import com.ahmedapps.roomdatabase.Obrazovky.ReceptsScreen
+import com.ahmedapps.roomdatabase.Obrazovky.ReceptsScreen1
+import com.ahmedapps.roomdatabase.RoomDatabaza.ReceptsViewModel
+import com.ahmedapps.roomdatabase.Obrazovky.Recept
+import com.ahmedapps.roomdatabase.Obrazovky.Screen
+import com.ahmedapps.roomdatabase.Obrazovky.Uvod
 import com.ahmedapps.roomdatabase.ui.RoomDatabaseTheme
 import com.google.android.datatransport.runtime.dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,9 +36,6 @@ import org.json.JSONArray
 
 
 class MainActivity : ComponentActivity() {
-
-
-
     private val viewModel by viewModels<ReceptsViewModel> (
         factoryProducer = {
             object : ViewModelProvider.Factory {
@@ -68,8 +65,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
                 ){
                     composable(Screen.ReceptsScreen.rout){
                         ReceptsScreen(state = state,
-                            navController = navController,
-                            onEvent = viewModel::onEvent)
+                            navController = navController,)
                     }
 
                     composable(
@@ -84,12 +80,13 @@ override fun onCreate(savedInstanceState: Bundle?) {
                     {backStackEntry->
                         Recept(navController = navController,backStackEntry=backStackEntry)
                     }
-                    composable(Screen.ReceptScreenOblubene.rout+"/{sstring}",
+                    composable(
+                        Screen.ReceptScreenOblubene.rout+"/{sstring}",
                        arguments = listOf(navArgument("sstring"){type = NavType.StringType})
                     ){backStackEntry->
                         ReceptsScreen1(state = state,
                             navController = navController,backStackEntry=backStackEntry,
-                            onEvent = viewModel::onEvent)
+                            )
                     }
                     composable(Screen.Uvod.rout){
                         Uvod(navController = navController)
@@ -100,7 +97,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
     }
 }
     @Provides
-    fun provideNotesDatabase(@ApplicationContext context: Context): ReceptsDatabase{
+    fun provideNotesDatabase(@ApplicationContext context: Context): ReceptsDatabase {
 
         database = Room.databaseBuilder(
             context,
@@ -137,13 +134,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
                         }
                     }
                 }
-
-
             }).build()
         return database
     }
-
-
 }
 
 

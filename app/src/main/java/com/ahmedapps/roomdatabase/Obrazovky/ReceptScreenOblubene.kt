@@ -1,9 +1,6 @@
-package com.ahmedapps.roomdatabase.presentation
+package com.ahmedapps.roomdatabase.Obrazovky
 
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,8 +18,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Button
@@ -31,7 +26,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
@@ -40,7 +34,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,21 +48,23 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.ahmedapps.roomdatabase.R
-import com.ahmedapps.roomdatabase.theme.Screen
+import com.ahmedapps.roomdatabase.RoomDatabaza.ReceptState
+import com.ahmedapps.roomdatabase.presentation.FunRozkakovaciPanel
 import java.net.URLEncoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReceptsScreen1(
     state: ReceptState,
-    navController: NavController,backStackEntry: NavBackStackEntry,
-    onEvent: (ReceptsEvent) -> Unit
-) {
+    navController: NavController, backStackEntry: NavBackStackEntry,
+
+    ) {
     val poleLikovVoStringu = backStackEntry.arguments?.getString("sstring")
-    val poleLikov= poleLikovVoStringu?.split(",")?.toTypedArray()
+    var poleLikov= poleLikovVoStringu?.split(",")?.toTypedArray()
     var text by remember { mutableStateOf("")}
     var active by remember { mutableStateOf(false)}
     var pomocna = ""
+
     val items = remember {
         mutableStateListOf<String>()
 
@@ -78,7 +73,7 @@ fun ReceptsScreen1(
         .fillMaxSize()
         .padding(16.dp)){
         Text(
-            text = "Liked",
+            text =  stringResource(R.string.liked),
             fontSize = 20.sp,
             modifier = Modifier
                 .fillMaxWidth(),
@@ -144,7 +139,9 @@ fun ReceptsScreen1(
                 .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            for(index in 0..state.receptiks.size){
+            val indexMax=state.receptiks.size-1
+            if(poleLikov?.get(0)=="nejde"){}else{
+            for(index in 0..indexMax){
                 if (poleLikov != null) {
                     if ((pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna))&& poleLikov.get(index) =="cau"&&  (poleLikov.size >= state.receptiks.size)){
 
@@ -152,13 +149,12 @@ fun ReceptsScreen1(
                             ReceptItem1(
                                 state = state,
                                 index = index,
-                                onEvent = onEvent,
                                 navController
                             )
                         }
                     }
                 }
-            }
+            }}
         }
         Row(
             modifier = Modifier
@@ -204,7 +200,6 @@ fun ReceptsScreen1(
 fun ReceptItem1(
     state: ReceptState,
     index: Int,
-    onEvent: (ReceptsEvent) -> Unit,
     navController:NavController
 ) {
     val nazov_ = state.receptiks[index].nazov //stringResource(affirmation.stringResourceId)
@@ -247,51 +242,7 @@ fun ReceptItem1(
                     tint = Color.White
                 )
             }
-            FunRozkakovaciPanel(nazov_,popis_)
-        }
-    }
-}
-
-@Composable
-private fun FunRozkakovaciPanel(name: String, popis_:String) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
-
-    Row(
-        modifier = Modifier
-            .padding(12.dp)
-            .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
-                )
-            )
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(12.dp)
-        ) {
-
-            Text(
-                text = name, style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.ExtraBold
-                )
-            )
-            if (expanded) {
-                Text(
-                    text = popis_
-                )
-            }
-        }
-        IconButton(onClick = { expanded = !expanded }) {
-            Icon(
-                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                contentDescription = if (expanded) {
-                    stringResource(R.string.show_less)
-                } else {
-                    stringResource(R.string.show_more)
-                }
-            )
+            FunRozkakovaciPanel(nazov_,popis_,false)
         }
     }
 }

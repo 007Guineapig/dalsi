@@ -1,13 +1,10 @@
-package com.ahmedapps.roomdatabase.theme
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
+package com.ahmedapps.roomdatabase.Obrazovky
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,39 +16,34 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
-import com.ahmedapps.roomdatabase.R
+import com.ahmedapps.roomdatabase.presentation.FunRozkakovaciPanel
 
 import java.net.URLDecoder
 
 
 
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Recept(navController: NavHostController,
@@ -102,7 +94,7 @@ fun Recept(navController: NavHostController,
                     )
                 }
                 if (ingrediencie != null && nazov != null) {
-                    FunIngrediencie(ingrediencie,nazov)
+                    FunRozkakovaciPanel(nazov,ingrediencie,true)
                 }
             }
         }
@@ -137,70 +129,6 @@ fun Recept(navController: NavHostController,
                         }
                     }
                 }
-            }
-        }
-    }
-
-    @Composable
-    private fun FunIngrediencie(popis_:String, nazov:String) {
-        var expanded by rememberSaveable { mutableStateOf(false) }
-
-        Row(
-            modifier = Modifier
-                .animateContentSize(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                )
-        ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(12.dp)
-            ) {
-
-                    Text(
-                        text = nazov,
-                        lineHeight = 30.sp,
-                        fontSize = 25.sp,
-                        modifier = Modifier
-                            .padding(15.dp),
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Start
-
-                    )
-                if (expanded) {
-                    Text(
-                        text = "Ingrediencie",
-                        fontSize = 25.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Start
-
-                    )
-                    LazyColumn (
-                        modifier = Modifier.fillMaxWidth()
-                    ){
-                        item{
-                            Text(
-                                text = popis_
-                            )
-                        }
-                    }
-
-                }
-            }
-            IconButton(onClick = { expanded = !expanded }) {
-                Icon(
-                    imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                    contentDescription = if (expanded) {
-                        stringResource(R.string.show_less)
-                    } else {
-                        stringResource(R.string.show_more)
-                    }
-                )
             }
         }
     }

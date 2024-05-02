@@ -1,4 +1,4 @@
-package com.ahmedapps.roomdatabase.data
+package com.ahmedapps.roomdatabase.RoomDatabaza
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
