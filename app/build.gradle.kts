@@ -61,7 +61,6 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    //implementation("androidx.compose.material3:material3")
     implementation("com.google.android.datatransport:transport-runtime:3.3.0")
     implementation("androidx.compose.material3:material3-android:1.2.1")
     implementation("androidx.paging:paging-common-android:3.3.0-beta01")
@@ -74,35 +73,18 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("javax.inject:javax.inject:1")
-
-    // Room
     val roomVersion = "2.6.0"
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
-
-
-
     implementation("com.google.dagger:hilt-android:2.40.5")
     kapt ("com.google.dagger:hilt-android-compiler:2.40.5")
     implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
     kapt ("androidx.hilt:hilt-compiler:1.0.0")
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
-
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
-
-
     implementation ("androidx.compose.foundation:foundation-layout:x.y.z")
-
-
-
-
-
-    // Navigation
     implementation ("androidx.navigation:navigation-compose:2.7.5")
-
-    // Extended Icons
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
-
     implementation("com.squareup.picasso:picasso:2.71828")
     implementation("io.coil-kt:coil-compose:2.4.0")
 }

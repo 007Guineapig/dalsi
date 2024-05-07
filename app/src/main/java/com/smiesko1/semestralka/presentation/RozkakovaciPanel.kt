@@ -19,7 +19,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -59,7 +58,6 @@ fun FunRozkakovaciPanel(name: String, popis_:String,ingrediencie:Boolean) {
                     Text(
                         text = "Ingrediencie",
                         fontSize = 25.sp,
-                        color = Color.White,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start
                     )

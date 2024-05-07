@@ -19,23 +19,25 @@ import androidx.navigation.navArgument
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.ahmedapps.roomdatabase.ui.RoomDatabaseTheme
+
 import com.google.android.datatransport.runtime.dagger.Provides
 
-import com.smiesko1.semestralka.Obrazovky.Recept
-import com.smiesko1.semestralka.Obrazovky.ReceptsScreen
-import com.smiesko1.semestralka.Obrazovky.ReceptsScreen1
-import com.smiesko1.semestralka.Obrazovky.Screen
-import com.smiesko1.semestralka.Obrazovky.Uvod
-import com.smiesko1.semestralka.RoomDatabaza.Receptik
-import com.smiesko1.semestralka.RoomDatabaza.ReceptsDatabase
-import com.smiesko1.semestralka.RoomDatabaza.ReceptsViewModel
+import com.smiesko1.semestralka.obrazovky.Recept
+import com.smiesko1.semestralka.obrazovky.ReceptsScreen
+import com.smiesko1.semestralka.obrazovky.ReceptsScreen1
+import com.smiesko1.semestralka.obrazovky.Screen
+import com.smiesko1.semestralka.obrazovky.Uvod
+import com.smiesko1.semestralka.pracaSulozenim.Receptik
+import com.smiesko1.semestralka.pracaSulozenim.ReceptsDatabase
+import com.smiesko1.semestralka.pracaSulozenim.ReceptsViewModel
+import com.smiesko1.semestralka.ui.theme.AplicationTheme
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 
 
+@Suppress("UNCHECKED_CAST")
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<ReceptsViewModel> (
         factoryProducer = {
@@ -54,7 +56,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 
         provideNotesDatabase(applicationContext)
-        RoomDatabaseTheme {
+        AplicationTheme {
             Surface(
                 color = MaterialTheme.colorScheme.background
             ) {
@@ -79,7 +81,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
                             navArgument("strind"){type = NavType.StringType}
                             ))
                     {backStackEntry->
-                        Recept(navController = navController,backStackEntry=backStackEntry)
+                        Recept(backStackEntry=backStackEntry)
                     }
                     composable(
                         Screen.ReceptScreenOblubene.rout+"/{sstring}",

@@ -1,4 +1,4 @@
-package com.smiesko1.semestralka.RoomDatabaza
+package com.smiesko1.semestralka.pracaSulozenim
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -16,11 +16,7 @@ class PreferencesManager(context: Context) {
 
     fun getData(key: String, defaultValue: Array<String>): Array<String> {
         val storedString = sharedPreferences.getString(key, null)
-        return if (storedString != null) {
-            storedString.split(",").toTypedArray()
-        } else {
-            defaultValue
-        }
+        return storedString?.split(",")?.toTypedArray() ?: defaultValue
     }
     fun getDataAsString(key: String): String? {
 

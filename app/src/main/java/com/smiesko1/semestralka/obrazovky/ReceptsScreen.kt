@@ -1,4 +1,4 @@
-package com.smiesko1.semestralka.Obrazovky
+package com.smiesko1.semestralka.obrazovky
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,8 +50,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.smiesko1.semestralka.R
-import com.smiesko1.semestralka.RoomDatabaza.PreferencesManager
-import com.smiesko1.semestralka.RoomDatabaza.ReceptState
+import com.smiesko1.semestralka.pracaSulozenim.PreferencesManager
+import com.smiesko1.semestralka.pracaSulozenim.ReceptState
 import com.smiesko1.semestralka.presentation.FunRozkakovaciPanel
 import java.net.URLEncoder
 
@@ -68,9 +68,9 @@ fun ReceptsScreen(
     var text by remember { mutableStateOf("")}
     var active by remember { mutableStateOf(false)}
     var pomocna = ""
-    var items = remember {
+    val items = remember {
         mutableStateListOf<String>()
-    }
+        }
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)){
@@ -104,7 +104,7 @@ fun ReceptsScreen(
                 trailingIcon = {
                     if(active) {
                         Icon(
-                            modifier = Modifier.clickable(){
+                            modifier = Modifier.clickable{
                                 if(text.isNotEmpty()){
                                     text = ""
                                 } else{ active = false}
@@ -134,61 +134,59 @@ fun ReceptsScreen(
                     }
                 }
             }
-Box(modifier = Modifier
-    .weight(1f)
-    .fillMaxWidth()){
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(state.receptiks.size) { index ->
-                    if (pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna)) {
-                         ReceptItem(preferencesManager,
-                            state = state,
-                            index = index,
-                            navController
-                         )
+                Box(modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()){
+                        LazyColumn(
+                        modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(state.receptiks.size) { index ->
+                            if (pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna)) {
+                            ReceptItem(preferencesManager,
+                                state = state,
+                                index = index,
+                                navController
+                            )
+                        }
                     }
-                 }
-            }
-}
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp), // Adjust the vertical padding here
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Button(
-                    onClick = {
-
-                    },
-                    colors = ButtonDefaults.buttonColors(contentColor = Color.Cyan),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(50.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = "Button 1 Icon"
-                    )
                 }
-                Button(
-                    onClick = {
-                        var pomocnePoleLikov = preferencesManager.getDataAsString("myKey")
-                        if(pomocnePoleLikov ==null)
-                            pomocnePoleLikov = "nejde"
-                        navController.navigate(Screen.ReceptScreenOblubene.rout+ "/$pomocnePoleLikov")
-                    },
+                }
+                Row(
                     modifier = Modifier
-                        .weight(1f)
-                        .height(50.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ThumbUp,
-                        contentDescription = "Button 1 Icon"
-                    )
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp), // Adjust the vertical padding here
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                    Button(
+                        onClick = {},
+                            colors = ButtonDefaults.buttonColors(contentColor = Color.Cyan),
+                            modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp)
+                            ) {
+                            Icon(
+                                imageVector = Icons.Default.Home,
+                                contentDescription = "Button 1 Icon"
+                            )
+                        }
+                        Button(
+                        onClick = {
+                            var pomocnePoleLikov = preferencesManager.getDataAsString("myKey")
+                            if(pomocnePoleLikov ==null)
+                                pomocnePoleLikov = "nejde"
+                            navController.navigate(Screen.ReceptScreenOblubene.rout+ "/$pomocnePoleLikov")
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp)
+                        ) {
+                        Icon(
+                            imageVector = Icons.Default.ThumbUp,
+                            contentDescription = "Button 1 Icon"
+                        )
                 }
             }
         }
@@ -230,20 +228,7 @@ fun ReceptItem(
             .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Column{
-            Box {/*
-                Image(
-                    painter = rememberImagePainter(
-                           data = vyzor,
-                        builder = {
-                            crossfade(true) },
-                            ),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(194.dp),
-                            contentScale = ContentScale.Crop
-                    )
-                    */
+            Box {
                 AsyncImage(
                     model = ImageRequest.Builder(context = LocalContext.current).data(vyzor)
                         .crossfade(true).build(),
@@ -253,9 +238,7 @@ fun ReceptItem(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxWidth()
                 )
-
-                //LoadAsyncImageWithPlaceholder(vyzor)
-                        ClickableHeartIcon(preferencesManager,state,index,
+                        ClickableHeartIcon(preferencesManager,index,
                         modifier = Modifier
                         .padding(16.dp)
                         .size(48.dp),
@@ -264,14 +247,12 @@ fun ReceptItem(
                 )
             }
             FunRozkakovaciPanel(nazov_, popis_,false)
-
         }
     }
 }
 
 @Composable
 fun ClickableHeartIcon(preferencesManager: PreferencesManager,
-                       state: ReceptState,
                        index: Int,
                        modifier: Modifier = Modifier,
                        onHeartClicked: () -> Unit
@@ -281,7 +262,6 @@ fun ClickableHeartIcon(preferencesManager: PreferencesManager,
     LaunchedEffect(preferencesManager) {
         data = preferencesManager.getData("myKey", Array(10) { "" })
     }
-
     Icon(
         imageVector = if (srdceKliknute || (data.getOrNull(index) == "cau")) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
         contentDescription = null,
@@ -289,10 +269,8 @@ fun ClickableHeartIcon(preferencesManager: PreferencesManager,
             val newData = data.toMutableList()
             if (data.isEmpty() || data.getOrNull(index) == null || data[index] != "cau") {
                 newData[index] = "cau"
-
             } else {
                 newData[index] = ""
-
             }
             preferencesManager.saveData("myKey", newData.toTypedArray())
             data = newData.toTypedArray()

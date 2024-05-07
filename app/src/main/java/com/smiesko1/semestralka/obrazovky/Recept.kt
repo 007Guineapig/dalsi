@@ -1,4 +1,4 @@
-package com.smiesko1.semestralka.Obrazovky
+package com.smiesko1.semestralka.obrazovky
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -34,7 +34,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.smiesko1.semestralka.presentation.FunRozkakovaciPanel
 
@@ -43,11 +42,10 @@ import java.net.URLDecoder
 
 
 
-@SuppressLint("SuspiciousIndentation")
+@SuppressLint("SuspiciousIndentation", "AutoboxingStateCreation")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Recept(navController: NavHostController,
-           backStackEntry: NavBackStackEntry){
+fun Recept(backStackEntry: NavBackStackEntry){
 
     val nazov = backStackEntry.arguments?.getString("Nazov")
     val jpg = backStackEntry.arguments?.getString("jpg")
@@ -89,8 +87,7 @@ fun Recept(navController: NavHostController,
                         contentDescription = null,
                         modifier = Modifier
                             .size(70.dp)
-                            .padding(4.dp),
-                                tint = if (liked == "cau") Color.White else Color.White
+                            .padding(4.dp)
                     )
                 }
                 if (ingrediencie != null && nazov != null) {
@@ -115,7 +112,7 @@ fun Recept(navController: NavHostController,
                         modifier = Modifier
                         .fillMaxSize()
                         .padding(12.dp)
-                        .background(if (page == aktualnaStranka) Color.White else Color.Transparent)
+                        .background(Color.Transparent)
                 ) {
                     LazyColumn{
 

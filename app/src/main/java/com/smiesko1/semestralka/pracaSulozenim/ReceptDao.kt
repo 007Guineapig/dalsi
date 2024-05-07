@@ -1,4 +1,4 @@
-package com.smiesko1.semestralka.RoomDatabaza
+package com.smiesko1.semestralka.pracaSulozenim
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -19,9 +19,6 @@ interface ReceptDao {
 
     @Query("SELECT * FROM receptik")
     fun readAll():Flow<List<Receptik>>
-
-    //@Delete
-   // suspend fun deleteNote(receptik: Receptik)
 
     @Query("SELECT * FROM receptik ORDER BY nazov ASC")
     fun getNotesOrderdByTitle(): Flow<List<Receptik>>

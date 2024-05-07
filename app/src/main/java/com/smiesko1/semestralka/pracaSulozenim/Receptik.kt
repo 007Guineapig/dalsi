@@ -1,4 +1,4 @@
-package com.smiesko1.semestralka.RoomDatabaza
+package com.smiesko1.semestralka.pracaSulozenim
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

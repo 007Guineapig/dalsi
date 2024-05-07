@@ -1,4 +1,4 @@
-package com.smiesko1.semestralka.RoomDatabaza
+package com.smiesko1.semestralka.pracaSulozenim
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

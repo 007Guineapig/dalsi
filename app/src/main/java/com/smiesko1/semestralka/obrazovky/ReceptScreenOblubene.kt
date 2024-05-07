@@ -1,4 +1,4 @@
-package com.smiesko1.semestralka.Obrazovky
+package com.smiesko1.semestralka.obrazovky
 
 
 import androidx.compose.foundation.clickable
@@ -42,7 +42,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
@@ -50,7 +49,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.smiesko1.semestralka.R
-import com.smiesko1.semestralka.RoomDatabaza.ReceptState
+import com.smiesko1.semestralka.pracaSulozenim.ReceptState
 import com.smiesko1.semestralka.presentation.FunRozkakovaciPanel
 import java.net.URLEncoder
 
@@ -62,7 +61,7 @@ fun ReceptsScreen1(
 
     ) {
     val poleLikovVoStringu = backStackEntry.arguments?.getString("sstring")
-    var poleLikov= poleLikovVoStringu?.split(",")?.toTypedArray()
+    val poleLikov= poleLikovVoStringu?.split(",")?.toTypedArray()
     var text by remember { mutableStateOf("")}
     var active by remember { mutableStateOf(false)}
     var pomocna = ""
@@ -104,7 +103,7 @@ fun ReceptsScreen1(
             trailingIcon = {
                 if(active) {
                     Icon(
-                        modifier = Modifier.clickable(){
+                        modifier = Modifier.clickable{
                             if(text.isNotEmpty()){
                                 text = ""
                             } else{ active = false}
@@ -137,30 +136,32 @@ fun ReceptsScreen1(
         Box(modifier = Modifier
             .weight(1f)
             .fillMaxWidth()){
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(590.dp)
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            val indexMax=state.receptiks.size-1
-            if(poleLikov?.get(0)=="nejde"){}else{
-            for(index in 0..indexMax){
-                if (poleLikov != null) {
-                    if ((pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna))&& poleLikov.get(index) =="cau"&&  (poleLikov.size >= state.receptiks.size)){
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(590.dp)
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                val indexMax=state.receptiks.size-1
+                if (poleLikov?.get(0) != "nejde") {
+                    for(index in 0..indexMax){
+                        if (poleLikov != null) {
+                            if ((pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna))&& poleLikov.get(index) =="cau"&&  (poleLikov.size >= state.receptiks.size)){
 
-                        item {
-                            ReceptItem1(
-                                state = state,
-                                index = index,
-                                navController
-                            )
+                                item {
+                                    ReceptItem1(
+                                        state = state,
+                                        index = index,
+                                        navController
+                                    )
+                                }
+                            }
                         }
                     }
                 }
-            }}
-        }}
+            }
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -191,7 +192,7 @@ fun ReceptsScreen1(
 
             ) {
                 Icon(
-                    imageVector = Icons.Default.ThumbUp, // Replace "YourIcon" with the desired icon
+                    imageVector = Icons.Default.ThumbUp,
                     contentDescription = "Button 1 Icon"
                 )
             }
@@ -207,7 +208,7 @@ fun ReceptItem1(
     index: Int,
     navController:NavController
 ) {
-    val nazov_ = state.receptiks[index].nazov //stringResource(affirmation.stringResourceId)
+    val nazov_ = state.receptiks[index].nazov
     val vyzor_ = URLEncoder.encode(state.receptiks[index].obrazok, "UTF-8")
     val ingrediencie = URLEncoder.encode(state.receptiks[index].ingrediencie, "UTF-8")
     val postup = URLEncoder.encode(state.receptiks[index].postup, "UTF-8")
@@ -220,25 +221,12 @@ fun ReceptItem1(
             containerColor = MaterialTheme.colorScheme.primary
         ),
         modifier = Modifier
-            .clickable(onClick = { navController.navigate(Screen.Recept1.rout + "/$nazov_/$vyzor_/$ingrediencie/$postup_/cau") }) // Add clickable modifier here
+            .clickable(onClick = { navController.navigate(Screen.Recept1.rout + "/$nazov_/$vyzor_/$ingrediencie/$postup_/cau") })
             .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Column{
-            Box{/*
-            Image(
-                painter = rememberImagePainter(
-                    data = vyzor,
-                    builder = {
-                        crossfade(true)
-                    }
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(194.dp),
-                contentScale = ContentScale.Crop
-            )
-            */
+            Box{
+
                 AsyncImage(
                     model = ImageRequest.Builder(context = LocalContext.current).data(vyzor)
                         .crossfade(true).build(),
@@ -254,7 +242,6 @@ fun ReceptItem1(
                     modifier = Modifier
                         .padding(16.dp)
                         .size(48.dp),
-                    tint = Color.White
                 )
             }
             FunRozkakovaciPanel(nazov_,popis_,false)

@@ -1,4 +1,4 @@
-package com.smiesko1.semestralka.Obrazovky
+package com.smiesko1.semestralka.obrazovky
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
