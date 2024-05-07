@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ahmedapps.roomdatabase"
+    namespace = "com.smiesko1.semestralka"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.ahmedapps.roomdatabase"
+        applicationId = "com.smiesko1.semestralka"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

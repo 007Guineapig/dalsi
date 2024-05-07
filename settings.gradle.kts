@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Room Database"
+rootProject.name = "semestralka"
 include(":app")
  
