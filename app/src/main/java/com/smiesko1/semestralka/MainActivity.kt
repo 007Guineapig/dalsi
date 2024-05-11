@@ -21,6 +21,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 import com.google.android.datatransport.runtime.dagger.Provides
+import com.smiesko1.semestralka.obrazovky.PridanieReceptu
 
 import com.smiesko1.semestralka.obrazovky.Recept
 import com.smiesko1.semestralka.obrazovky.ReceptsScreen
@@ -39,10 +40,10 @@ import org.json.JSONArray
 
 @Suppress("UNCHECKED_CAST")
 class MainActivity : ComponentActivity() {
-    private val viewModel by viewModels<ReceptsViewModel> (
+    private val viewModel by viewModels<ReceptsViewModel>(
         factoryProducer = {
             object : ViewModelProvider.Factory {
-                override fun<T: ViewModel> create(modelClass: Class<T>): T {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return ReceptsViewModel(database.dao) as T
                 }
             }
@@ -50,103 +51,108 @@ class MainActivity : ComponentActivity() {
     )
 
     lateinit var database: ReceptsDatabase
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContent {
+    private var isDatabaseInitialized = false // Flag to track database initialization
 
-
-        provideNotesDatabase(applicationContext)
-        AplicationTheme {
-            Surface(
-                color = MaterialTheme.colorScheme.background
-            ) {
-
-                val state by viewModel.state.collectAsState()
-                val navController = rememberNavController()
-                NavHost(navController=navController,
-                    startDestination = Screen.Uvod.rout
-                ){
-                    composable(Screen.ReceptsScreen.rout){
-                        ReceptsScreen(state = state,
-                            navController = navController,)
-                    }
-
-                    composable(
-                        Screen.Recept1.rout+ "/{Nazov}/{jpg}/{ingrediencie}/{postup}/{strind}",
-                        arguments=listOf(
-                            navArgument("Nazov"){type = NavType.StringType },
-                            navArgument("jpg"){type = NavType.StringType },
-                            navArgument("ingrediencie"){type = NavType.StringType},
-                           navArgument("postup"){type = NavType.StringType},
-                            navArgument("strind"){type = NavType.StringType}
-                            ))
-                    {backStackEntry->
-                        Recept(backStackEntry=backStackEntry)
-                    }
-                    composable(
-                        Screen.ReceptScreenOblubene.rout+"/{sstring}",
-                       arguments = listOf(navArgument("sstring"){type = NavType.StringType})
-                    ){backStackEntry->
-                        ReceptsScreen1(state = state,
-                            navController = navController,backStackEntry=backStackEntry,
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            if (!isDatabaseInitialized) {
+                provideReceptsDatabase(applicationContext)
+                isDatabaseInitialized = true // Set the flag to true after database initialization
+            }
+            AplicationTheme {
+                Surface(
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val state by viewModel.state.collectAsState()
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.Uvod.rout
+                    ) {
+                        composable(Screen.ReceptsScreen.rout) {
+                            ReceptsScreen(
+                                state = state,
+                                navController = navController,
                             )
-                    }
-                    composable(Screen.Uvod.rout){
-                        Uvod(navController = navController)
+                        }
+
+                        composable(
+                            Screen.Recept1.rout + "/{Nazov}/{jpg}/{ingrediencie}/{postup}/{strind}",
+                            arguments = listOf(
+                                navArgument("Nazov") { type = NavType.StringType },
+                                navArgument("jpg") { type = NavType.StringType },
+                                navArgument("ingrediencie") { type = NavType.StringType },
+                                navArgument("postup") { type = NavType.StringType },
+                                navArgument("strind") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            Recept(backStackEntry = backStackEntry)
+                        }
+                        composable(
+                            Screen.ReceptScreenOblubene.rout + "/{sstring}",
+                            arguments = listOf(navArgument("sstring") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            ReceptsScreen1(
+                                state = state,
+                                navController = navController,
+                                backStackEntry = backStackEntry,
+                            )
+                        }
+                        composable(Screen.Uvod.rout) {
+                            Uvod(navController = navController)
+                        }
+                        composable(Screen.PridajRecept.rout) {
+                            PridanieReceptu(database.dao,navController = navController)
+                        }
                     }
                 }
             }
         }
     }
-}
+
     @Provides
-    fun provideNotesDatabase(@ApplicationContext context: Context): ReceptsDatabase {
+    fun provideReceptsDatabase(@ApplicationContext context: Context): ReceptsDatabase {
+        if (!isDatabaseInitialized) {
+            database = Room.databaseBuilder(
+                context,
+                ReceptsDatabase::class.java,
+                "receptiks.db"
+            )
+                .addCallback(object : RoomDatabase.Callback() {
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        super.onCreate(db)
+                        GlobalScope.launch {
+                            val receptDao = database.dao
+                            val receptList: JSONArray =
+                                context.resources.openRawResource(R.raw.sample1).bufferedReader().use {
+                                    JSONArray(it.readText())
+                                }
 
-        database = Room.databaseBuilder(
-            context,
-            ReceptsDatabase::class.java,
-            "receptiks.db"
-        )
-            .addCallback(object: RoomDatabase.Callback(){
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    super.onCreate(db)
-                    GlobalScope.launch {
-                        val receptDao = database.dao
-                        val receptList: JSONArray =
-                            context.resources.openRawResource(R.raw.sample1).bufferedReader().use {
-                                JSONArray(it.readText())
-                            }
+                            receptList.takeIf { it.length() > 0 }?.let { list ->
+                                for (index in 0 until list.length()) {
+                                    val receptObj = list.getJSONObject(index)
 
-                        receptList.takeIf { it.length() > 0 }?.let { list ->
-                            for (index in 0 until list.length()) {
-                                val receptObj = list.getJSONObject(index)
-
-                                receptDao.insert(
-                                    Receptik(
-                                        nazov = receptObj.getString("nazov"),
-                                        popis = receptObj.getString("popis"),
-                                        obrazok = receptObj.getString("obrazok"),
-                                        postup = receptObj.getString("postup"),
-                                        ingrediencie = receptObj.getString("ingrediencie"),
-                                        kategoria = receptObj.getString("kategoria")
+                                    receptDao.insert(
+                                        Receptik(
+                                            nazov = receptObj.getString("nazov"),
+                                            popis = receptObj.getString("popis"),
+                                            obrazok = receptObj.getString("obrazok"),
+                                            postup = receptObj.getString("postup"),
+                                            ingrediencie = receptObj.getString("ingrediencie"),
+                                            kategoria = receptObj.getString("kategoria")
+                                        )
                                     )
-
-                                )
-
+                                }
                             }
                         }
                     }
-                }
-            }).build()
+                }).build()
+            isDatabaseInitialized = true // Set the flag to true after database initialization
+        }
         return database
     }
 }
-
-
-
-
-
-
 
 
 

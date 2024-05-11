@@ -87,6 +87,9 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("com.squareup.picasso:picasso:2.71828")
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-alpha05")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha05")
 }
 
 

@@ -230,7 +230,7 @@ fun ReceptItem1(
                 AsyncImage(
                     model = ImageRequest.Builder(context = LocalContext.current).data(vyzor)
                         .crossfade(true).build(),
-                    error = painterResource(R.drawable.image11),
+                    error = painterResource(R.drawable.error),
                     placeholder = painterResource(R.drawable.loading_img),
                     contentDescription = stringResource(R.string.liked),
                     contentScale = ContentScale.Crop,

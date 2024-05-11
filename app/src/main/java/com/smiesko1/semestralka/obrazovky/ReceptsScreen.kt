@@ -78,6 +78,10 @@ fun ReceptsScreen(
                 text = stringResource(R.string.menu),
                 fontSize = 20.sp,
                 modifier = Modifier
+                    .clickable(onClick =
+                    { navController.navigate(Screen.PridajRecept.rout) }
+
+                    )
                     .fillMaxWidth(),
                 fontWeight = FontWeight.ExtraBold,
                 fontFamily = FontFamily.SansSerif,

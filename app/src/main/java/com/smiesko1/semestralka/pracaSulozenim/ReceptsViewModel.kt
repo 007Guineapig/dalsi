@@ -12,23 +12,15 @@ class ReceptsViewModel(
     private val dao: ReceptDao
 ) : ViewModel() {
 
-    private val isSortedByDateAdded = MutableStateFlow(true)
-
-    private var recepts =
-        isSortedByDateAdded.flatMapLatest { sort ->
-            if (sort) {
-               dao.getNotesOrderdByTitle()
-            } else {
-                dao.getNotesOrderdByTitle()
-            }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val recepts = dao.getReceptsOrderdByTitle()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     val _state = MutableStateFlow(ReceptState())
-    val state =
-        combine(_state, isSortedByDateAdded, recepts) { state, isSortedByDateAdded, recepts ->
-            state.copy(
-                receptiks = recepts
-            )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ReceptState())
+    val state = combine(_state, recepts) { state, recepts ->
+        state.copy(
+            receptiks = recepts
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ReceptState())
+
 
 }

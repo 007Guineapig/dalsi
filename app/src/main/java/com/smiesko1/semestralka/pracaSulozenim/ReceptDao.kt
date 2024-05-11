@@ -15,13 +15,16 @@ interface ReceptDao {
     suspend fun upsertRecept(receptik: Receptik)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(receptik: Receptik)
+    fun insert(receptik: Receptik)
 
     @Query("SELECT * FROM receptik")
     fun readAll():Flow<List<Receptik>>
 
     @Query("SELECT * FROM receptik ORDER BY nazov ASC")
-    fun getNotesOrderdByTitle(): Flow<List<Receptik>>
+    fun getReceptsOrderdByTitle(): Flow<List<Receptik>>
+
+    @Query("SELECT COUNT(*) FROM receptik")
+    fun getCount(): Flow<Int>
 
 }
 
