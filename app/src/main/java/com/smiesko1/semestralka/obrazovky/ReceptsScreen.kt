@@ -56,6 +56,7 @@ import com.smiesko1.semestralka.R
 import com.smiesko1.semestralka.pracaSulozenim.PreferencesManager
 import com.smiesko1.semestralka.pracaSulozenim.ReceptDao
 import com.smiesko1.semestralka.pracaSulozenim.ReceptState
+import com.smiesko1.semestralka.presentation.ClickableHeartIcon
 import com.smiesko1.semestralka.presentation.FunRozkakovaciPanel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,12 +67,13 @@ import java.net.URLEncoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReceptsScreen(dao: ReceptDao,
+fun ReceptsScreen(preferences: PreferencesManager,dao: ReceptDao,
                   state: ReceptState,
                   navController: NavController,
 ) {
     val context = LocalContext.current
-    val preferencesManager = remember { PreferencesManager(context) }
+    //val preferencesManager = remember { PreferencesManager(context) }
+    val preferencesManager = preferences
     var text by remember { mutableStateOf("")}
     var active by remember { mutableStateOf(false)}
     var pomocna = ""
@@ -186,10 +188,8 @@ fun ReceptsScreen(dao: ReceptDao,
                         }
                         Button(
                         onClick = {
-                            var pomocnePoleLikov = preferencesManager.getDataAsString("myKey")
-                            if(pomocnePoleLikov ==null)
-                                pomocnePoleLikov = "nejde"
-                            navController.navigate(Screen.ReceptScreenOblubene.rout+ "/$pomocnePoleLikov")
+
+                            navController.navigate(Screen.ReceptScreenOblubene.rout)
                         },
                         modifier = Modifier
                             .weight(1f)
@@ -314,34 +314,7 @@ fun ReceptItem(dao: ReceptDao,
     }
 }
 
-@Composable
-fun ClickableHeartIcon(preferencesManager: PreferencesManager,
-                       index: Int,
-                       modifier: Modifier = Modifier,
-                       onHeartClicked: () -> Unit
-) {
-    var data by remember { mutableStateOf(preferencesManager.getData("myKey", emptyArray())) }
-    var srdceKliknute by remember { mutableStateOf(false) }
-    LaunchedEffect(preferencesManager) {
-        data = preferencesManager.getData("myKey", Array(10) { "" })
-    }
-    Icon(
-        imageVector = if (srdceKliknute || (data.getOrNull(index) == "cau")) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
-        contentDescription = null,
-        modifier = modifier.clickable {
-            val newData = data.toMutableList()
-            if (data.isEmpty() || data.getOrNull(index) == null || data[index] != "cau") {
-                newData[index] = "cau"
-            } else {
-                newData[index] = ""
-            }
-            preferencesManager.saveData("myKey", newData.toTypedArray())
-            data = newData.toTypedArray()
-            srdceKliknute = newData[index] == "cau"
-            onHeartClicked()
-        }
-    )
-}
+
 
 
 

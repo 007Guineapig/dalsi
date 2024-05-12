@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
@@ -29,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -49,20 +51,20 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.smiesko1.semestralka.R
+import com.smiesko1.semestralka.pracaSulozenim.PreferencesManager
 import com.smiesko1.semestralka.pracaSulozenim.ReceptState
+import com.smiesko1.semestralka.presentation.ClickableHeartIcon
 import com.smiesko1.semestralka.presentation.FunRozkakovaciPanel
 import java.net.URLEncoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReceptsScreen1(
+fun ReceptsScreen1(preferences: PreferencesManager,
     state: ReceptState,
-    navController: NavController, backStackEntry: NavBackStackEntry,
+    navController: NavController,
 
     ) {
-    val poleLikovVoStringu = backStackEntry.arguments?.getString("sstring")
-    val poleLikov= poleLikovVoStringu?.split(",")?.toTypedArray()
-    var text by remember { mutableStateOf("")}
+   var text by remember { mutableStateOf("")}
     var active by remember { mutableStateOf(false)}
     var pomocna = ""
 
@@ -136,31 +138,11 @@ fun ReceptsScreen1(
         Box(modifier = Modifier
             .weight(1f)
             .fillMaxWidth()){
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(590.dp)
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                val indexMax=state.receptiks.size-1
-                if (poleLikov?.get(0) != "nejde") {
-                    for(index in 0..indexMax){
-                        if (poleLikov != null) {
-                            if ((pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna))&& poleLikov.get(index) =="cau"&&  (poleLikov.size >= state.receptiks.size)){
 
-                                item {
-                                    ReceptItem1(
-                                        state = state,
-                                        index = index,
-                                        navController
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            rob(preferences,state,navController,pomocna)
+
+
+
         }
         Row(
             modifier = Modifier
@@ -202,8 +184,11 @@ fun ReceptsScreen1(
 
 
 
+
+
+
 @Composable
-fun ReceptItem1(
+fun ReceptItem1(preferencesManager: PreferencesManager,
     state: ReceptState,
     index: Int,
     navController:NavController
@@ -236,19 +221,57 @@ fun ReceptItem1(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Icon(
-                    imageVector = Icons.Filled.Favorite,
-                    contentDescription = null,
+                ClickableHeartIcon(preferencesManager,index,
                     modifier = Modifier
                         .padding(16.dp)
                         .size(48.dp),
+                    onHeartClicked = {
+
+                        }
+
                 )
+
+
             }
             FunRozkakovaciPanel(nazov_,popis_,false)
         }
     }
 }
 
+@Composable
+fun rob(preferences: PreferencesManager, state: ReceptState, navController: NavController, pomocna:String) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(590.dp)
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        val liknuteVoStringu = preferences.getDataAsString("myKey")
+        val poleLikov = liknuteVoStringu
+            ?.split(",")
+            ?.toTypedArray()
+        val indexMax=state.receptiks.size-1
+        if (poleLikov?.get(0) != "nejde") {
+            for(index in 0..indexMax){
+                if (poleLikov != null) {
+                    if ((pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna))&& poleLikov.get(index) =="cau"&&  (poleLikov.size >= state.receptiks.size)){
+
+                        item {
+                            ReceptItem1(
+                                preferences,
+                                state = state,
+                                index = index,
+                                navController
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
 
 
 

@@ -9,6 +9,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavType
@@ -28,6 +30,7 @@ import com.smiesko1.semestralka.obrazovky.ReceptsScreen
 import com.smiesko1.semestralka.obrazovky.ReceptsScreen1
 import com.smiesko1.semestralka.obrazovky.Screen
 import com.smiesko1.semestralka.obrazovky.Uvod
+import com.smiesko1.semestralka.pracaSulozenim.PreferencesManager
 import com.smiesko1.semestralka.pracaSulozenim.Receptik
 import com.smiesko1.semestralka.pracaSulozenim.ReceptsDatabase
 import com.smiesko1.semestralka.pracaSulozenim.ReceptsViewModel
@@ -66,12 +69,15 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val state by viewModel.state.collectAsState()
                     val navController = rememberNavController()
+                    val context = LocalContext.current
+                    val preferencesManager = remember { PreferencesManager(context) }
+
                     NavHost(
                         navController = navController,
                         startDestination = Screen.Uvod.rout
                     ) {
                         composable(Screen.ReceptsScreen.rout) {
-                            ReceptsScreen(database.dao,
+                            ReceptsScreen(preferencesManager,database.dao,
                                 state = state,
                                 navController = navController,
                             )
@@ -90,13 +96,11 @@ class MainActivity : ComponentActivity() {
                             Recept(backStackEntry = backStackEntry)
                         }
                         composable(
-                            Screen.ReceptScreenOblubene.rout + "/{sstring}",
-                            arguments = listOf(navArgument("sstring") { type = NavType.StringType })
-                        ) { backStackEntry ->
-                            ReceptsScreen1(
+                            Screen.ReceptScreenOblubene.rout) {
+                            ReceptsScreen1(preferencesManager,
                                 state = state,
                                 navController = navController,
-                                backStackEntry = backStackEntry,
+
                             )
                         }
                         composable(Screen.Uvod.rout) {
