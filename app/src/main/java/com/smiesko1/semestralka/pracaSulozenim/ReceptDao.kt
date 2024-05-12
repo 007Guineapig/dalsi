@@ -26,6 +26,9 @@ interface ReceptDao {
     @Query("SELECT COUNT(*) FROM receptik")
     fun getCount(): Flow<Int>
 
+    @Query("DELETE FROM receptik WHERE nazov = :nazov")
+     fun deleteById(nazov: String)
+
 }
 
 

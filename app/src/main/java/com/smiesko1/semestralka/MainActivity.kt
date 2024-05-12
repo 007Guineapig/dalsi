@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = Screen.Uvod.rout
                     ) {
                         composable(Screen.ReceptsScreen.rout) {
-                            ReceptsScreen(
+                            ReceptsScreen(database.dao,
                                 state = state,
                                 navController = navController,
                             )

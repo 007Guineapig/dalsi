@@ -30,11 +30,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
+import com.smiesko1.semestralka.R
 import com.smiesko1.semestralka.presentation.FunRozkakovaciPanel
 
 import java.net.URLDecoder
@@ -69,19 +75,17 @@ fun Recept(backStackEntry: NavBackStackEntry){
             ){
 
                 Box{
-                Image(
-                    painter = rememberImagePainter(
-                        data = decodedUrl,
-                        builder = {
-                            crossfade(true)
-                        }
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp),
-                    contentScale = ContentScale.Crop
-                )
+
+                    AsyncImage(
+                        model = ImageRequest.Builder(context = LocalContext.current).data(decodedUrl)
+                            .crossfade(true).build(),
+                        error = painterResource(R.drawable.error),
+                        placeholder = painterResource(R.drawable.loading_img),
+                        contentDescription = stringResource(R.string.liked),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxWidth()
+                            .height(250.dp)
+                    )
                     Icon(
                         imageVector = if (liked == "cau") Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = null,

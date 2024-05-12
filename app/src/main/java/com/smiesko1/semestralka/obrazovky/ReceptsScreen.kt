@@ -18,7 +18,9 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -35,6 +37,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -51,17 +54,21 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.smiesko1.semestralka.R
 import com.smiesko1.semestralka.pracaSulozenim.PreferencesManager
+import com.smiesko1.semestralka.pracaSulozenim.ReceptDao
 import com.smiesko1.semestralka.pracaSulozenim.ReceptState
 import com.smiesko1.semestralka.presentation.FunRozkakovaciPanel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.net.URLEncoder
 
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReceptsScreen(
-    state: ReceptState,
-    navController: NavController,
+fun ReceptsScreen(dao: ReceptDao,
+                  state: ReceptState,
+                  navController: NavController,
 ) {
     val context = LocalContext.current
     val preferencesManager = remember { PreferencesManager(context) }
@@ -143,13 +150,14 @@ fun ReceptsScreen(
                     .fillMaxWidth()){
                         LazyColumn(
                         modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
+                            .fillMaxSize()
+                            .padding(8.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             items(state.receptiks.size) { index ->
                             if (pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna)) {
-                            ReceptItem(preferencesManager,
+                            ReceptItem(dao,
+                                preferencesManager,
                                 state = state,
                                 index = index,
                                 navController
@@ -168,8 +176,8 @@ fun ReceptsScreen(
                         onClick = {},
                             colors = ButtonDefaults.buttonColors(contentColor = Color.Cyan),
                             modifier = Modifier
-                            .weight(1f)
-                            .height(50.dp)
+                                .weight(1f)
+                                .height(50.dp)
                             ) {
                             Icon(
                                 imageVector = Icons.Default.Home,
@@ -199,7 +207,7 @@ fun ReceptsScreen(
 
 
 @Composable
-fun ReceptItem(
+fun ReceptItem(dao: ReceptDao,
     preferencesManager: PreferencesManager,
     state: ReceptState,
     index: Int,
@@ -222,9 +230,11 @@ fun ReceptItem(
         modifier = Modifier
             .clickable(onClick = {
                 val liknuteVoStringu = preferencesManager.getDataAsString("myKey")
-                val liknuteVoPole= liknuteVoStringu?.split(",")?.toTypedArray()
+                val liknuteVoPole = liknuteVoStringu
+                    ?.split(",")
+                    ?.toTypedArray()
                 var jeLiknutyTento = liknuteVoPole?.get(index)
-                if(jeLiknutyTento ==""||jeLiknutyTento == null){
+                if (jeLiknutyTento == "" || jeLiknutyTento == null) {
                     jeLiknutyTento = "ahoj"
                 }
                 navController.navigate(Screen.Recept1.rout + "/$nazov_/$vyzor_/$ingrediencie/$postup_/$jeLiknutyTento")
@@ -236,7 +246,7 @@ fun ReceptItem(
                 AsyncImage(
                     model = ImageRequest.Builder(context = LocalContext.current).data(vyzor)
                         .crossfade(true).build(),
-                    error = painterResource(R.drawable.image11),
+                    error = painterResource(R.drawable.error),
                     placeholder = painterResource(R.drawable.loading_img),
                     contentDescription = stringResource(R.string.liked),
                     contentScale = ContentScale.Crop,
@@ -244,11 +254,60 @@ fun ReceptItem(
                 )
                         ClickableHeartIcon(preferencesManager,index,
                         modifier = Modifier
-                        .padding(16.dp)
-                        .size(48.dp),
+                            .padding(16.dp)
+                            .size(48.dp),
                         onHeartClicked = {
                     }
                 )
+
+
+                var showDialog by remember { mutableStateOf(false) }
+
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false },
+                        title = { Text("Confirm Deletion") },
+                        text = { Text("Are you sure you want to delete this item?") },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    showDialog = false
+                                    // Perform delete operation
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        dao.deleteById(state.receptiks[index].nazov)
+                                    }
+                                }
+                            ) {
+                                Text("Yes")
+                            }
+                        },
+                        dismissButton = {
+                            Button(
+                                onClick = { showDialog = false }
+                            ) {
+                                Text("Cancel")
+                            }
+                        }
+                    )
+                }
+
+
+
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = null,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .size(48.dp)
+                    .align(Alignment.TopEnd)
+                    .clickable{
+
+                        showDialog = true
+
+                    }
+
+                )
+
             }
             FunRozkakovaciPanel(nazov_, popis_,false)
         }
