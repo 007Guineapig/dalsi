@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun ClickableHeartIcon(
@@ -30,11 +32,8 @@ fun ClickableHeartIcon(
     var srdceKliknute by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val isClicked = dao.isClicked(state.receptiks[index].nazov)
-            srdceKliknute = isClicked>0
-        }
+        val isClicked = dao.isClicked(state.receptiks[index].nazov)
+        srdceKliknute = isClicked > 0
     }
 
     Icon(
@@ -44,13 +43,22 @@ fun ClickableHeartIcon(
             val nazov = state.receptiks[index].nazov
             srdceKliknute = !srdceKliknute
 
-
             CoroutineScope(Dispatchers.IO).launch {
                 dao.update(if (srdceKliknute) "nejde" else "", nazov)
+                withContext(Dispatchers.Main) {
+                    onHeartClicked()
+                }
             }
-
-            onHeartClicked()
-
-              }
+        }
     )
+
+    DisposableEffect(state.receptiks[index].nazov) {
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val isClicked = dao.isClicked(state.receptiks[index].nazov)
+            srdceKliknute = isClicked>0
+        }
+
+        onDispose { /* Clean up if needed */ }
+    }
 }
