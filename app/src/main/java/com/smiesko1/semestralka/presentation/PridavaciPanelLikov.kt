@@ -12,34 +12,45 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.smiesko1.semestralka.pracaSulozenim.PreferencesManager
+import com.smiesko1.semestralka.pracaSulozenim.ReceptDao
+import com.smiesko1.semestralka.pracaSulozenim.ReceptState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
-fun ClickableHeartIcon(preferencesManager: PreferencesManager,
-                       index: Int,
-                       modifier: Modifier = Modifier,
-                       onHeartClicked: () -> Unit
+fun ClickableHeartIcon(
+    state: ReceptState,
+    dao: ReceptDao,
+    index: Int,
+    modifier: Modifier = Modifier,
+    onHeartClicked: () -> Unit
 ) {
-    var data by remember { mutableStateOf(preferencesManager.getData("myKey", emptyArray())) }
     var srdceKliknute by remember { mutableStateOf(false) }
-    LaunchedEffect(preferencesManager) {
-        data = preferencesManager.getData("myKey", Array(10) { "" })
+
+    LaunchedEffect(Unit) {
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val isClicked = dao.isClicked(state.receptiks[index].nazov)
+            srdceKliknute = isClicked>0
+        }
     }
+
     Icon(
-        imageVector = if (srdceKliknute || (data.getOrNull(index) == "cau")) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+        imageVector = if (srdceKliknute) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
         contentDescription = null,
         modifier = modifier.clickable {
-            val newData = data.toMutableList()
-            if (data.isEmpty() || data.getOrNull(index) == null || data[index] != "cau") {
-                newData[index] = "cau"
-            } else {
-                newData[index] = ""
+            val nazov = state.receptiks[index].nazov
+            srdceKliknute = !srdceKliknute
+
+
+            CoroutineScope(Dispatchers.IO).launch {
+                dao.update(if (srdceKliknute) "nejde" else "", nazov)
             }
-            preferencesManager.saveData("myKey", newData.toTypedArray())
-            data = newData.toTypedArray()
-            srdceKliknute = newData[index] == "cau"
+
             onHeartClicked()
 
-        }
+              }
     )
 }

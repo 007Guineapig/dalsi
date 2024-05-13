@@ -41,6 +41,9 @@ import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.smiesko1.semestralka.R
+import com.smiesko1.semestralka.pracaSulozenim.ReceptDao
+import com.smiesko1.semestralka.pracaSulozenim.ReceptState
+import com.smiesko1.semestralka.presentation.ClickableHeartIcon
 import com.smiesko1.semestralka.presentation.FunRozkakovaciPanel
 
 import java.net.URLDecoder
@@ -51,17 +54,9 @@ import java.net.URLDecoder
 @SuppressLint("SuspiciousIndentation", "AutoboxingStateCreation")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Recept(backStackEntry: NavBackStackEntry){
-
-    val nazov = backStackEntry.arguments?.getString("Nazov")
-    val jpg = backStackEntry.arguments?.getString("jpg")
-    val postup_ = backStackEntry.arguments?.getString("postup")
-    val ingrediencie_ = backStackEntry.arguments?.getString("ingrediencie")
-    val ingrediencie = URLDecoder.decode(ingrediencie_, "UTF-8")
-    val postup = URLDecoder.decode(postup_,"UTF-8")
-    val decodedUrl = URLDecoder.decode(jpg, "UTF-8")
-    val liked = backStackEntry.arguments?.getString("strind")
-
+fun Recept(state: ReceptState,dao: ReceptDao,backStackEntry: NavBackStackEntry){
+    val index = backStackEntry.arguments?.getInt("index")
+    val postup = state.receptiks[index!!].postup
     Column{
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -77,7 +72,7 @@ fun Recept(backStackEntry: NavBackStackEntry){
                 Box{
 
                     AsyncImage(
-                        model = ImageRequest.Builder(context = LocalContext.current).data(decodedUrl)
+                        model = ImageRequest.Builder(context = LocalContext.current).data(state.receptiks[index].obrazok)
                             .crossfade(true).build(),
                         error = painterResource(R.drawable.error),
                         placeholder = painterResource(R.drawable.loading_img),
@@ -86,17 +81,19 @@ fun Recept(backStackEntry: NavBackStackEntry){
                         modifier = Modifier.fillMaxWidth()
                             .height(250.dp)
                     )
-                    Icon(
-                        imageVector = if (liked == "cau") Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(70.dp)
-                            .padding(4.dp)
-                    )
+
+                        ClickableHeartIcon(state,dao,index,
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .size(48.dp),
+                            onHeartClicked = {
+                            }
+                        )
+
                 }
-                if (ingrediencie != null && nazov != null) {
-                    FunRozkakovaciPanel(nazov,ingrediencie,true)
-                }
+
+                    FunRozkakovaciPanel(state.receptiks[index].nazov,state.receptiks[index].ingrediencie,true)
+
             }
         }
         val vyslednePole = remember { postup.split(Regex("\\d+\\.")) }

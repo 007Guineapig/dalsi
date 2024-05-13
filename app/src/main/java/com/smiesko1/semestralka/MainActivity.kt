@@ -30,7 +30,7 @@ import com.smiesko1.semestralka.obrazovky.ReceptsScreen
 import com.smiesko1.semestralka.obrazovky.ReceptsScreen1
 import com.smiesko1.semestralka.obrazovky.Screen
 import com.smiesko1.semestralka.obrazovky.Uvod
-import com.smiesko1.semestralka.pracaSulozenim.PreferencesManager
+
 import com.smiesko1.semestralka.pracaSulozenim.Receptik
 import com.smiesko1.semestralka.pracaSulozenim.ReceptsDatabase
 import com.smiesko1.semestralka.pracaSulozenim.ReceptsViewModel
@@ -69,35 +69,29 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val state by viewModel.state.collectAsState()
                     val navController = rememberNavController()
-                    val context = LocalContext.current
-                    val preferencesManager = remember { PreferencesManager(context) }
 
                     NavHost(
                         navController = navController,
                         startDestination = Screen.Uvod.rout
                     ) {
                         composable(Screen.ReceptsScreen.rout) {
-                            ReceptsScreen(preferencesManager,database.dao,
+                            ReceptsScreen(database.dao,
                                 state = state,
                                 navController = navController,
                             )
                         }
 
                         composable(
-                            Screen.Recept1.rout + "/{Nazov}/{jpg}/{ingrediencie}/{postup}/{strind}",
+                            Screen.Recept1.rout + "/{index}",
                             arguments = listOf(
-                                navArgument("Nazov") { type = NavType.StringType },
-                                navArgument("jpg") { type = NavType.StringType },
-                                navArgument("ingrediencie") { type = NavType.StringType },
-                                navArgument("postup") { type = NavType.StringType },
-                                navArgument("strind") { type = NavType.StringType }
+                                navArgument("index"){type = NavType.IntType}
                             )
                         ) { backStackEntry ->
-                            Recept(backStackEntry = backStackEntry)
+                            Recept(state,database.dao,backStackEntry = backStackEntry)
                         }
                         composable(
                             Screen.ReceptScreenOblubene.rout) {
-                            ReceptsScreen1(preferencesManager,
+                            ReceptsScreen1(database.dao,
                                 state = state,
                                 navController = navController,
 

@@ -10,27 +10,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -38,28 +30,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.smiesko1.semestralka.R
-import com.smiesko1.semestralka.pracaSulozenim.PreferencesManager
+import com.smiesko1.semestralka.pracaSulozenim.ReceptDao
 import com.smiesko1.semestralka.pracaSulozenim.ReceptState
-import com.smiesko1.semestralka.presentation.ClickableHeartIcon
-import com.smiesko1.semestralka.presentation.FunRozkakovaciPanel
-import java.net.URLEncoder
+import com.smiesko1.semestralka.presentation.ReceptyVColumne
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReceptsScreen1(preferences: PreferencesManager,
+fun ReceptsScreen1(dao: ReceptDao,
     state: ReceptState,
     navController: NavController,
 
@@ -139,10 +123,7 @@ fun ReceptsScreen1(preferences: PreferencesManager,
             .weight(1f)
             .fillMaxWidth()){
 
-            rob(preferences,state,navController,pomocna)
-
-
-
+            ReceptyVColumne(pomocna,dao,state,navController,true)
         }
         Row(
             modifier = Modifier
@@ -185,93 +166,6 @@ fun ReceptsScreen1(preferences: PreferencesManager,
 
 
 
-
-
-@Composable
-fun ReceptItem1(preferencesManager: PreferencesManager,
-    state: ReceptState,
-    index: Int,
-    navController:NavController
-) {
-    val nazov_ = state.receptiks[index].nazov
-    val vyzor_ = URLEncoder.encode(state.receptiks[index].obrazok, "UTF-8")
-    val ingrediencie = URLEncoder.encode(state.receptiks[index].ingrediencie, "UTF-8")
-    val postup = URLEncoder.encode(state.receptiks[index].postup, "UTF-8")
-    val popis_ = state.receptiks[index].popis
-    val vyzor = state.receptiks[index].obrazok
-    val postup_ = postup
-
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary
-        ),
-        modifier = Modifier
-            .clickable(onClick = { navController.navigate(Screen.Recept1.rout + "/$nazov_/$vyzor_/$ingrediencie/$postup_/cau") })
-            .padding(vertical = 4.dp, horizontal = 8.dp)
-    ) {
-        Column{
-            Box{
-
-                AsyncImage(
-                    model = ImageRequest.Builder(context = LocalContext.current).data(vyzor)
-                        .crossfade(true).build(),
-                    error = painterResource(R.drawable.error),
-                    placeholder = painterResource(R.drawable.loading_img),
-                    contentDescription = stringResource(R.string.liked),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                ClickableHeartIcon(preferencesManager,index,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .size(48.dp),
-                    onHeartClicked = {
-
-                        }
-
-                )
-
-
-            }
-            FunRozkakovaciPanel(nazov_,popis_,false)
-        }
-    }
-}
-
-@Composable
-fun rob(preferences: PreferencesManager, state: ReceptState, navController: NavController, pomocna:String) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(590.dp)
-            .padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        val liknuteVoStringu = preferences.getDataAsString("myKey")
-        val poleLikov = liknuteVoStringu
-            ?.split(",")
-            ?.toTypedArray()
-        val indexMax=state.receptiks.size-1
-        if (poleLikov?.get(0) != "nejde") {
-            for(index in 0..indexMax){
-                if (poleLikov != null) {
-                    if ((pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna))&& poleLikov.get(index) =="cau"&&  (poleLikov.size >= state.receptiks.size)){
-
-                        item {
-                            ReceptItem1(
-                                preferences,
-                                state = state,
-                                index = index,
-                                navController
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-}
 
 
 

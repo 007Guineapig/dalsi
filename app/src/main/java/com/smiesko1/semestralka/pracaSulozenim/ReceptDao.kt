@@ -1,5 +1,6 @@
 package com.smiesko1.semestralka.pracaSulozenim
 
+import androidx.compose.runtime.MutableState
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -28,6 +29,13 @@ interface ReceptDao {
 
     @Query("DELETE FROM receptik WHERE nazov = :nazov")
      fun deleteById(nazov: String)
+
+    @Query("UPDATE receptik set kategoria =:kategoria WHERE nazov = :nazov")
+    suspend fun update(kategoria:String, nazov: String)
+
+    @Query("SELECT COUNT(*) FROM receptik WHERE nazov = :nazov AND kategoria = 'nejde'")
+    suspend fun isClicked(nazov: String): Int
+
 
 }
 
