@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.smiesko1.semestralka.pracaSulozenim.ReceptDao
 import com.smiesko1.semestralka.pracaSulozenim.ReceptState
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +22,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
+//Meni srdiečko receptu podla kliknutia,
+// oblubeny recepty(plne srdiečko inak prazdne srdiečko)
+//Updatuje v ROOM databaze kategoria("oblubene" inak "")
 @Composable
 fun ClickableHeartIcon(
     state: ReceptState,
@@ -44,7 +49,7 @@ fun ClickableHeartIcon(
             srdceKliknute = !srdceKliknute
 
             CoroutineScope(Dispatchers.IO).launch {
-                dao.update(if (srdceKliknute) "nejde" else "", nazov)
+                dao.update(if (srdceKliknute) "oblubene" else "", nazov)
                 withContext(Dispatchers.Main) {
                     onHeartClicked()
                 }
@@ -59,6 +64,7 @@ fun ClickableHeartIcon(
             srdceKliknute = isClicked>0
         }
 
-        onDispose { /* Clean up if needed */ }
+        onDispose {}
     }
 }
+

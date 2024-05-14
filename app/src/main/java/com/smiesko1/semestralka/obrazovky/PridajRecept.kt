@@ -27,18 +27,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.smiesko1.semestralka.R
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.navigation.compose.rememberNavController
 import com.smiesko1.semestralka.pracaSulozenim.ReceptDao
-import com.smiesko1.semestralka.pracaSulozenim.ReceptState
 import com.smiesko1.semestralka.pracaSulozenim.Receptik
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
+//Screen kde uživatel môže pridavať vlastne recepty, všetky texboxy musia byť vyplnene
 @Composable
-fun PridanieReceptu(dao: ReceptDao,
+fun PridanieReceptu(dao: ReceptDao?,
                     navController: NavController) {
     val textStatePopis = remember { mutableStateOf(TextFieldValue()) }
     val textStateUrl = remember { mutableStateOf(TextFieldValue()) }
@@ -54,7 +54,6 @@ Box{
 
         Text(
             text = stringResource(R.string.pridaj),
-
             fontSize = 20.sp,
             modifier = Modifier
                 .fillMaxWidth()
@@ -104,14 +103,14 @@ Box{
             label = { Text("Ingrediencie") }
         )
         BoxWithConstraints {
-            val maxHeight = maxHeight // Get the maximum height from BoxWithConstraints
+            val maxHeight = maxHeight
             TextField(
                 value = textStatePostup.value,
                 onValueChange = { textStatePostup.value = it },
                 modifier = Modifier
                     .height(200.dp)
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp), // Adjust as needed
+                    .padding(bottom = 16.dp),
                 label = { Text("Postup") }
             )
         }
@@ -135,11 +134,11 @@ Box{
                     obrazok = url,
                     ingrediencie = ingrediencie,
                     postup = postup,
-                    kategoria = "Some category" // You might need to adjust this
+                    kategoria = ""
                 )
 
                 CoroutineScope(Dispatchers.IO).launch {
-                    dao.insert(newRecept)
+                    dao?.insert(newRecept)
                 }
                     navController.popBackStack()
                 }
@@ -173,10 +172,8 @@ Box{
 @Composable
 fun DefaultPreview() {
 
-    MyApp()
+    PridanieReceptu(dao = null, navController =  rememberNavController())
 }
 
-@Composable
-fun MyApp() {
-   //PridanieReceptu(state = null,null)
-}
+
+

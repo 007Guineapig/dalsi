@@ -40,7 +40,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 
-
+//Vytvorenie aplikacie, navigatora
 @Suppress("UNCHECKED_CAST")
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<ReceptsViewModel>(
@@ -54,14 +54,14 @@ class MainActivity : ComponentActivity() {
     )
 
     lateinit var database: ReceptsDatabase
-    private var isDatabaseInitialized = false // Flag to track database initialization
+    private var isDatabaseInitialized = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             if (!isDatabaseInitialized) {
                 provideReceptsDatabase(applicationContext)
-                isDatabaseInitialized = true // Set the flag to true after database initialization
+                isDatabaseInitialized = true
             }
             AplicationTheme {
                 Surface(
@@ -109,6 +109,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    //Naplnenie databazi(len pri stiahnuti sa inicializuje)
     @Provides
     fun provideReceptsDatabase(@ApplicationContext context: Context): ReceptsDatabase {
         if (!isDatabaseInitialized) {
@@ -146,7 +147,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }).build()
-            isDatabaseInitialized = true // Set the flag to true after database initialization
+            isDatabaseInitialized = true
         }
         return database
     }

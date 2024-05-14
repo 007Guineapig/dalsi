@@ -33,14 +33,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.smiesko1.semestralka.R
 import com.smiesko1.semestralka.pracaSulozenim.ReceptDao
 import com.smiesko1.semestralka.pracaSulozenim.ReceptState
 import com.smiesko1.semestralka.presentation.ReceptyVColumne
 
+
+//Hlavny SCREEN menu kde sa nachadza searchbar,recepty(ReceptyColumne)
+//a 2 tlacidla na spodu obrazovky(home/oblubene)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReceptsScreen(dao: ReceptDao,

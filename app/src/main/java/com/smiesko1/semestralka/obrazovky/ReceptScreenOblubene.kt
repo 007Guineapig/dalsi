@@ -41,6 +41,8 @@ import com.smiesko1.semestralka.pracaSulozenim.ReceptDao
 import com.smiesko1.semestralka.pracaSulozenim.ReceptState
 import com.smiesko1.semestralka.presentation.ReceptyVColumne
 
+//SCREEN Oblubene kde sa nachadza searchbar,recepty(ReceptyColumne)
+//a 2 tlacidla na spodu obrazovky(home/oblubene)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReceptsScreen1(dao: ReceptDao,

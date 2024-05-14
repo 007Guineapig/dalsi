@@ -42,6 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+//Recepty(ReceptItem) v skrolovaciom LazyColumne
 @Composable
 fun ReceptyVColumne(pomocna:String, dao: ReceptDao, state: ReceptState, navController: NavController,boolean:Boolean) {
     LazyColumn(
@@ -57,7 +58,7 @@ fun ReceptyVColumne(pomocna:String, dao: ReceptDao, state: ReceptState, navContr
 
             if (boolean) {
 
-                if ((pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna))&& state.receptiks[index].kategoria == "nejde") {
+                if ((pomocna.isEmpty() || state.receptiks[index].nazov.contains(pomocna))&& state.receptiks[index].kategoria == "oblubene") {
                     item {
                         ReceptItem(
                             dao,
@@ -85,6 +86,9 @@ fun ReceptyVColumne(pomocna:String, dao: ReceptDao, state: ReceptState, navContr
     }
 }
 
+//Karta receptu v menu a oblubene(ktora obsahuje obrazok
+//ikony srdiečka,križika(odstranenie receptu, po zakliknuti vyskoči okno či recept chce uživatel vymazať))
+//+ rozkakovaci panel(RozkakovaciPanel)
 @Composable
 fun ReceptItem(dao: ReceptDao,
                state: ReceptState,

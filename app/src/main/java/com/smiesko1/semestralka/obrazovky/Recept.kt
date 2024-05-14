@@ -34,9 +34,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
@@ -50,7 +52,9 @@ import java.net.URLDecoder
 
 
 
-
+//Screen receptu kde sa nachadza obrazok receptu rozklikavaci panel
+//ktory po kliknuty ukaze igrediencie, a lazyRow, swipovaci kde sa nachadzaju
+// postupy receptu
 @SuppressLint("SuspiciousIndentation", "AutoboxingStateCreation")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

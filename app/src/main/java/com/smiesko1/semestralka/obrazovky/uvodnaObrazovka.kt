@@ -24,12 +24,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.smiesko1.semestralka.R
 
-
+//Uvodna obrazovka po ktorej kliknuti sa použivatel dostane do Menu
 @Composable
 fun Uvod(navController: NavHostController,
     modifier: Modifier = Modifier
@@ -75,4 +77,11 @@ fun Uvod(navController: NavHostController,
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreviewUvod() {
+
+    Uvod(navController = rememberNavController())
 }

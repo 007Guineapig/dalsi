@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
-
+//Manažovanie UI-data a logiku pre obrazovky
+//Akzualizuje po tom ako su data zmenene
+//Interakcia s databazou, manažuje list receptov z databazy
 class ReceptsViewModel(
     private val dao: ReceptDao
 ) : ViewModel() {

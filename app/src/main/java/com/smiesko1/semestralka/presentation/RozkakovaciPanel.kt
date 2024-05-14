@@ -22,10 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import com.smiesko1.semestralka.R
+import com.smiesko1.semestralka.obrazovky.Uvod
 
+//Panel ktory po kliknuti expanduje a ukaže prislušne informacie(boolean prispôsobuje čí sa zobrazi "ingrediencie")
 @Composable
 fun FunRozkakovaciPanel(name: String, popis_:String,ingrediencie:Boolean) {
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -78,4 +82,20 @@ fun FunRozkakovaciPanel(name: String, popis_:String,ingrediencie:Boolean) {
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreviewRozkakovaciPanelfalse() {
+
+    FunRozkakovaciPanel("Halászlé","Kotlíkové halászlé - až sa bojím, že sa spustí tradičné komentárové peklo o autenticite :) ",false )
+    FunRozkakovaciPanel("Halászlé","Kotlíkové halászlé - až sa bojím, že sa spustí tradičné komentárové peklo o autenticite :) ",true )
+
+}
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreviewRozkakovaciPaneltrue() {
+
+    FunRozkakovaciPanel("Halászlé","Kotlíkové halászlé - až sa bojím, že sa spustí tradičné komentárové peklo o autenticite :) ",true )
+
 }

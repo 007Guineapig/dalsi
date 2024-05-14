@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+//Entita ROOM databazy recept
 @Entity
 data class Receptik(
 
