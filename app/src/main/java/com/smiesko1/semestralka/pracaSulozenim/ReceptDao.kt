@@ -8,7 +8,7 @@ import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
-
+//tato trieda definuje operácie pre prácu s databázou receptov
 @Dao
 interface ReceptDao {
 
@@ -27,7 +27,6 @@ interface ReceptDao {
     //Vypytanie Receptov množstvo
     @Query("SELECT COUNT(*) FROM receptik")
     fun getCount(): Flow<Int>
-
     //Odstranenie Receptu do ROOM databazy
     @Query("DELETE FROM receptik WHERE nazov = :nazov")
      fun deleteById(nazov: String)
@@ -37,6 +36,7 @@ interface ReceptDao {
     //Vypitanie Receptu do či je medzi oblubenymi
     @Query("SELECT COUNT(*) FROM receptik WHERE nazov = :nazov AND kategoria = 'oblubene'")
     suspend fun isClicked(nazov: String): Int
+
 
 
 }

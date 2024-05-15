@@ -3,7 +3,7 @@ package com.smiesko1.semestralka.pracaSulozenim
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
-//Reprezentacia UI state
+//toto je dátová trieda, ktorá predstavuje stav obrazovky s receptami.
 data class ReceptState(
 
     val receptiks: List<Receptik> = emptyList(),

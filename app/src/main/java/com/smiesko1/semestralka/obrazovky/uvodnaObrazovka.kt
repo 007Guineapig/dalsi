@@ -85,3 +85,4 @@ fun DefaultPreviewUvod() {
 
     Uvod(navController = rememberNavController())
 }
+

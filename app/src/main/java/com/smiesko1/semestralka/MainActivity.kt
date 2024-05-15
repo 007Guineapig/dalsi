@@ -9,8 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavType
@@ -21,16 +19,13 @@ import androidx.navigation.navArgument
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-
 import com.google.android.datatransport.runtime.dagger.Provides
 import com.smiesko1.semestralka.obrazovky.PridanieReceptu
-
 import com.smiesko1.semestralka.obrazovky.Recept
 import com.smiesko1.semestralka.obrazovky.ReceptsScreen
 import com.smiesko1.semestralka.obrazovky.ReceptsScreen1
 import com.smiesko1.semestralka.obrazovky.Screen
 import com.smiesko1.semestralka.obrazovky.Uvod
-
 import com.smiesko1.semestralka.pracaSulozenim.Receptik
 import com.smiesko1.semestralka.pracaSulozenim.ReceptsDatabase
 import com.smiesko1.semestralka.pracaSulozenim.ReceptsViewModel
@@ -40,7 +35,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 
-//Vytvorenie aplikacie, navigatora
+//Tato trieda  obsahuje logiku na inicializáciu a správu
+//rôznych obrazoviek pomocou Compose a Navigation Component.
 @Suppress("UNCHECKED_CAST")
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<ReceptsViewModel>(
@@ -72,20 +68,26 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.Uvod.rout
+                        startDestination = Screen.Uvod.rout,
+
+
                     ) {
+
                         composable(Screen.ReceptsScreen.rout) {
                             ReceptsScreen(database.dao,
                                 state = state,
                                 navController = navController,
                             )
+
                         }
 
                         composable(
+
                             Screen.Recept1.rout + "/{index}",
                             arguments = listOf(
                                 navArgument("index"){type = NavType.IntType}
                             )
+
                         ) { backStackEntry ->
                             Recept(state,database.dao,backStackEntry = backStackEntry)
                         }
@@ -99,6 +101,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(Screen.Uvod.rout) {
                             Uvod(navController = navController)
+
                         }
                         composable(Screen.PridajRecept.rout) {
                             PridanieReceptu(database.dao,navController = navController)
