@@ -25,9 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
 import com.smiesko1.semestralka.R
-import com.smiesko1.semestralka.obrazovky.Uvod
 
 //Panel ktory po kliknuti expanduje a ukaže prislušne informacie(boolean prispôsobuje čí sa zobrazi "ingrediencie")
 @Composable

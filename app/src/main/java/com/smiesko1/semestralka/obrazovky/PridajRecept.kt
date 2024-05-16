@@ -1,5 +1,6 @@
 package com.smiesko1.semestralka.obrazovky
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +35,7 @@ import com.smiesko1.semestralka.pracaSulozenim.ReceptDao
 import com.smiesko1.semestralka.pracaSulozenim.Receptik
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -45,7 +48,6 @@ fun PridanieReceptu(dao: ReceptDao?,
     val textStateIngrediencie = remember { mutableStateOf(TextFieldValue()) }
     val textStatePostup = remember { mutableStateOf(TextFieldValue()) }
     val textStateNazov = remember { mutableStateOf(TextFieldValue()) }
-    var showError by remember { mutableStateOf(false) }
     var showSnackbar by remember { mutableStateOf(false) }
 
 Box{
@@ -150,20 +152,27 @@ Box{
 
 
     }
-    if (showSnackbar) {
-        Snackbar(
-            action = {
-                TextButton(onClick = { showSnackbar = false }) {
-                    Text("Close")
-                }
-            },
-            modifier = Modifier.padding(16.dp)
-                .align(Alignment.BottomCenter)
-        ) {
-            Text(text = "Please fill in all fields")
+
+
+        AnimatedVisibility(visible = showSnackbar) {
+            LaunchedEffect(showSnackbar) {
+                delay(3000)
+                showSnackbar = false
+            }
+
+            Snackbar(
+                action = {
+                    TextButton(onClick = { showSnackbar = false }) {
+                        Text("Close")
+                    }
+                },
+                modifier = Modifier.padding(16.dp)
+
+            ) {
+                Text(text = "Please fill in all fields")
+            }
         }
     }
-}
 }
 
 

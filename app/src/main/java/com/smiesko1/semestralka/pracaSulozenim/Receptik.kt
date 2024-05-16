@@ -1,7 +1,6 @@
 package com.smiesko1.semestralka.pracaSulozenim
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.ui.text.input.TextFieldValue
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 

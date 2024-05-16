@@ -39,7 +39,6 @@ import com.smiesko1.semestralka.pracaSulozenim.ReceptDao
 import com.smiesko1.semestralka.pracaSulozenim.ReceptState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 //Recepty(ReceptItem) v skrolovaciom LazyColumne
@@ -139,7 +138,7 @@ fun ReceptItem(dao: ReceptDao,
                             Button(
                                 onClick = {
                                     showDialog = false
-                                    // Perform delete operation
+
                                     CoroutineScope(Dispatchers.IO).launch {
                                         dao.deleteById(state.receptiks[index].nazov)
                                     }
