@@ -25,7 +25,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = PurpleGrey40,
     tertiary = Pink40
 )
-
+//Reagovanie na darkmode mobilneho zariadenia
 @Composable
 fun AplicationTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
