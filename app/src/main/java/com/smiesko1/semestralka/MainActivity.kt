@@ -20,6 +20,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.android.datatransport.runtime.dagger.Provides
+import com.smiesko1.semestralka.obrazovky.EditovanieReceptu
 import com.smiesko1.semestralka.obrazovky.PridanieReceptu
 import com.smiesko1.semestralka.obrazovky.Recept
 import com.smiesko1.semestralka.obrazovky.ReceptsScreen
@@ -71,7 +72,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = Screen.Uvod.rout,
 
 
-                    ) {
+                        ) {
 
                         composable(Screen.ReceptsScreen.rout) {
                             ReceptsScreen(database.dao,
@@ -97,7 +98,7 @@ class MainActivity : ComponentActivity() {
                                 state = state,
                                 navController = navController,
 
-                            )
+                                )
                         }
                         composable(Screen.Uvod.rout) {
                             Uvod(navController = navController)
@@ -105,6 +106,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(Screen.PridajRecept.rout) {
                             PridanieReceptu(database.dao,navController = navController)
+                        }
+                        composable(Screen.EditovanieReceptu.rout) {
+                            EditovanieReceptu(database.dao,state)
                         }
                     }
                 }
@@ -155,17 +159,6 @@ class MainActivity : ComponentActivity() {
         return database
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

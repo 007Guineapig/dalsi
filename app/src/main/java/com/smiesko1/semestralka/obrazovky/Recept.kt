@@ -85,7 +85,7 @@ fun Recept(state: ReceptState,dao: ReceptDao,backStackEntry: NavBackStackEntry){
 
                 }
 
-                    FunRozkakovaciPanel(state.receptiks[index].nazov,state.receptiks[index].ingrediencie,true)
+                FunRozkakovaciPanel(dao,index,state,false,true)
 
             }
         }

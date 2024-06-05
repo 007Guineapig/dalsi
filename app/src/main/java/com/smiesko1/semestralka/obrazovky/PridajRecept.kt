@@ -39,7 +39,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-//Screen kde uživatel môže pridavať vlastne recepty, všetky texboxy musia byť vyplnene
+//Screen kde použivatel môže pridavať vlastne recepty, všetky texboxy musia byť vyplnene
 @Composable
 fun PridanieReceptu(dao: ReceptDao?,
                     navController: NavController) {

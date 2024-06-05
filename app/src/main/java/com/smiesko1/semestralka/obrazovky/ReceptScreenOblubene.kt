@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,11 +49,11 @@ import com.smiesko1.semestralka.presentation.ReceptyVColumne
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReceptsScreen1(dao: ReceptDao,
-    state: ReceptState,
-    navController: NavController,
+                   state: ReceptState,
+                   navController: NavController,
 
-    ) {
-   var text by remember { mutableStateOf("")}
+                   ) {
+    var text by remember { mutableStateOf("")}
     var active by remember { mutableStateOf(false)}
     var pomocna = ""
 
@@ -67,8 +68,12 @@ fun ReceptsScreen1(dao: ReceptDao,
             text =  stringResource(R.string.liked),
             fontSize = 20.sp,
             modifier = Modifier
+                .clickable(onClick =
+                { navController.navigate(Screen.EditovanieReceptu.rout) }
+                )
                 .fillMaxWidth(),
             fontWeight = FontWeight.ExtraBold,
+            fontFamily = FontFamily.SansSerif,
             textAlign = TextAlign.Center
         )
 
@@ -165,7 +170,3 @@ fun ReceptsScreen1(dao: ReceptDao,
         }
     }
 }
-
-
-
-

@@ -9,5 +9,6 @@ sealed class Screen(val rout:String) {
     object Uvod: Screen("Uvod")
     object ReceptScreenOblubene: Screen("Oblubene")
     object PridajRecept: Screen("Pridaj")
+    object EditovanieReceptu: Screen("Edituj")
 
 }

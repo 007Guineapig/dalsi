@@ -27,7 +27,7 @@ interface ReceptDao {
     fun getCount(): Flow<Int>
     //Odstranenie Receptu do ROOM databazy
     @Query("DELETE FROM receptik WHERE nazov = :nazov")
-     fun deleteById(nazov: String)
+    fun deleteById(nazov: String)
     //Aktualizovanie Receptu do ROOM databazy
     @Query("UPDATE receptik set kategoria =:kategoria WHERE nazov = :nazov")
     suspend fun update(kategoria:String, nazov: String)
@@ -35,17 +35,10 @@ interface ReceptDao {
     @Query("SELECT COUNT(*) FROM receptik WHERE nazov = :nazov AND kategoria = 'oblubene'")
     suspend fun isClicked(nazov: String): Int
 
+    @Query("UPDATE receptik set nazov =:nazov, popis =:popis,obrazok =:obrazok,ingrediencie =:ingrediencie WHERE id = :index")
+    suspend fun updateAll(popis:String, nazov: String,obrazok: String,ingrediencie: String,index: Int)
+
 
 
 }
-
-
-
-
-
-
-
-
-
-
 

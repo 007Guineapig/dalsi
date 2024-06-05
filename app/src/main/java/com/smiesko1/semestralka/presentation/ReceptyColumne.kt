@@ -175,7 +175,7 @@ fun ReceptItem(dao: ReceptDao,
                 )
 
             }
-            FunRozkakovaciPanel(state.receptiks[index].nazov,state.receptiks[index].popis,false)
+            FunRozkakovaciPanel(dao,index,state,false,false)
 
         }
     }
